@@ -1,5 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { ClipboardPlus, Eye } from "lucide-react";
 import CustomerDetailSheet from "./customer-detail-sheet";
+import { Button } from "@/components/ui/button"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export type CustomerColumn = {
     customer_id: string;
@@ -17,10 +24,28 @@ export type CustomerColumn = {
 
 export const columns: ColumnDef<CustomerColumn>[] = [
     {
+        accessorKey: 'action',
+        header: 'Action',
+        cell: ({ row }) => (
+            <div>
+                <CustomerDetailSheet row={row} />
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="outline" size='icon'><ClipboardPlus /></Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Create agreement</p>
+                    </TooltipContent>
+                </Tooltip>
+
+            </div>
+        )
+    },
+    {
         accessorKey: "customer_id",
         header: "ID",
         cell: ({ row }) => (
-            <CustomerDetailSheet row={row} />
+            <div>{row.getValue("customer_id")}</div>
         ),
     },
     {
