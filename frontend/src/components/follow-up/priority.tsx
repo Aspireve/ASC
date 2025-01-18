@@ -52,7 +52,17 @@ const Priority = () => {
                     }
                 })
                 console.log(res.data)
-                setData(res.data)
+                const combined = [...res.data.oneDayAhead, ...res.data.oneWeekAhead, ...res.data.oneMonthAhead].map((item) => ({
+                    read: item.read,
+                    _id: item._id,
+                    userId: item.userId,
+                    agreement: item.agreement._id, // Extract the agreement ID
+                    title: item.agreement.title, // Extract the title
+                    dateToDisplay: item.dateToDisplay,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                }));
+                setData(combined)
             } catch (error) {
                 console.log(error)
             }
