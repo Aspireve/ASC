@@ -49,7 +49,7 @@ exports.getNotifications = async (req, res, next) => {
 
 exports.setNotificationAsread = async (req, res, next) => {
   try {
-    const { notificationId } = req.params;
+    const { notificationId } = req.query;
     const notification = await NotificationModel.findById(notificationId);
     notification.read = true;
     await notification.save();
