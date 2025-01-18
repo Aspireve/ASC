@@ -30,6 +30,10 @@ router
   .post(authorize(LOGGED_USER), controller.completeAgreement);
 
 router
+  .route("/verifyDocument")
+  .post(authorize(LOGGED_USER), controller.verifyAgreement);
+
+router
   .route("/get-all-agreements")
   .post(authorize(LOGGED_USER), controller.getAllAgreements);
 

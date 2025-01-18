@@ -1,5 +1,14 @@
 const NotificationModel = require("../models/notification.model");
-const { getWarningDates } = require("../utils/getWarningdates");
+// const { getWarningDates } = require("../utils/getWarningdates");
+
+const getWarningDates = () => {
+  const now = new Date();
+  return {
+    oneMonthAhead: new Date(now.setMonth(now.getMonth() + 1)),
+    oneWeekAhead: new Date(now.setDate(now.getDate() + 7)),
+    oneDayAhead: new Date(now.setDate(now.getDate() + 1)),
+  };
+};
 
 exports.getNotifications = async (req, res, next) => {
   try {
@@ -40,7 +49,7 @@ exports.getNotifications = async (req, res, next) => {
 
 exports.setNotificationAsread = async (req, res, next) => {
   try {
-    const { notificationId } = req.params;
+    const { notificationId } = req.query;
     const notification = await NotificationModel.findById(notificationId);
     notification.read = true;
     await notification.save();
