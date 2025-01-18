@@ -17,7 +17,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     }, [currentPath]); // Trigger animation on path change
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen !font-dm-sans">
             <CustomSidebar user={user} />
             <main className="flex-1 p-4 overflow-auto">
                 <h1

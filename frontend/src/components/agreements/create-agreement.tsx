@@ -15,7 +15,6 @@ interface Agreement {
 }
 
 const CreateAgreement = ({ customerId }: { customerId: string }) => {
-    console.log(customerId)
     const [agreement, setAgreement] = useState<Agreement>({
         title: "",
         content: "",
@@ -27,15 +26,41 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
     const editorRef = useRef<EditorJS | null>(null);
     const isEditorInitialized = useRef(false);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ): void => {
+    const [organization, setOrganization] = useState<any>({});
+    const [customer, setCustomer] = useState<any>({});
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setAgreement((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
+
+    useEffect(() => {
+        const fetchOrganizationAndCustomerDetails = async () => {
+            try {
+                const organizationResponse = await axios.get(`http://localhost:5000/v1/company/create`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                console.log(organizationResponse.data);
+                setOrganization(organizationResponse.data);
+                const idToCheck = localStorage.getItem("customerIdToCheck");
+                const customerResponse = await axios.get(`http://localhost:5000/v1/customer/get/${idToCheck}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                setCustomer(customerResponse.data);
+            } catch (error) {
+                console.error("Error fetching organization or customer data:", error);
+            }
+        };
+
+        fetchOrganizationAndCustomerDetails();
+    }, [customerId, accessToken]);
 
     useEffect(() => {
         const initEditor = async () => {
@@ -125,7 +150,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 }
             }
         };
-    }, []);
+    }, [agreement.content]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
@@ -140,11 +165,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             const contentPayload = {
                 title: agreement.title,
-                content: finalContent, // Only sending the content field
-                customer: customerId
+                content: finalContent,
+                customer: customerId,
             };
-
-            console.log("Submitting content:", contentPayload);
 
             const response = await axios.post("http://localhost:5000/v1/agree/agreement", contentPayload, {
                 headers: {
@@ -153,7 +176,6 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             });
             console.log("Content submitted successfully:", response.data);
 
-            // Reset the form
             setAgreement({ title: "", content: "" });
             if (editorRef.current && typeof editorRef.current.clear === "function") {
                 editorRef.current.clear();
@@ -163,7 +185,6 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         }
     };
 
-
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white font-dm-sans p-4">
             <form
@@ -171,29 +192,39 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 onSubmit={handleSubmit}
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">Create Agreement</h1>
+
                 <div className="mb-4">
-                    <label
-                        className="block text-sm font-medium text-gray-700"
-                        htmlFor="title"
-                    >
-                        Title
-                    </label>
+
                     <input
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         type="text"
                         id="title"
                         name="title"
+                        placeholder="Title"
                         value={agreement.title}
                         onChange={handleChange}
                         required
                     />
                 </div>
 
+                {/* Display Organization Details */}
                 <div className="mb-4">
-                    <label
-                        className="block text-sm font-medium text-gray-700"
-                        htmlFor="content"
-                    >
+                    <h2 className="font-semibold text-lg">Organization Details</h2>
+                    <p>Name: {organization.name}</p>
+                    <p>Address: {organization.address}</p>
+                    <p>Contact: {organization.contact}</p>
+                </div>
+
+                {/* Display Customer Details */}
+                <div className="mb-4">
+                    <h2 className="font-semibold text-lg">Customer Details</h2>
+                    <p>Name: {customer.name}</p>
+                    <p>Email: {customer.email}</p>
+                    <p>Phone: {customer.phone}</p>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="content">
                         Content
                     </label>
                     <div
