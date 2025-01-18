@@ -46,16 +46,21 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     },
                 });
                 console.log(organizationResponse.data);
+
                 setOrganization(organizationResponse.data);
                 const idToCheck = localStorage.getItem("customerIdToCheck");
-                const customerResponse = await axios.get(`http://localhost:5000/v1/customer/get/${idToCheck}`, {
+                const customerResponse = await axios.get(`http://localhost:5000/v1/agree/get?_id=${idToCheck}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 });
+
                 setCustomer(customerResponse.data);
             } catch (error) {
                 console.error("Error fetching organization or customer data:", error);
+            }
+            finally {
+                console.log()
             }
         };
 
