@@ -37,7 +37,7 @@ export type CustomerColumn = {
 export const columns: ColumnDef<CustomerColumn>[] = [
     {
         accessorKey: 'action',
-        header: '',
+        header: 'Action',
         cell: ({ row }) => {
             const customerId = row.original._id; // Access the _id directly from original data
             if (!customerId) return null;
@@ -46,7 +46,7 @@ export const columns: ColumnDef<CustomerColumn>[] = [
             };
 
             return (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 font-dm-sans">
                     <CustomerDetailSheet row={row} />
                     <Sheet>
                         <Tooltip>

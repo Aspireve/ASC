@@ -19,7 +19,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface UserProfile {
     name: string;
@@ -33,62 +33,70 @@ interface CustomSidebarProps {
 
 const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const location = useLocation(); // Get the current location
 
     const toggleCollapse = () => {
         setIsCollapsed(!isCollapsed);
     };
 
+    const getActiveClass = (path: string) => {
+        return location.pathname === path ? 'bg-gary-500 text-black font-extrabold' : ''; // Active class for highlighting
+    };
+
     return (
         <SidebarProvider>
-            <Sidebar className={`transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
+            <Sidebar className={`transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-52'}`}>
                 <SidebarHeader className="flex flex-row justify-between items-center p-4">
                     {!isCollapsed && (
                         <img src='/Agreed Wordmark.svg' alt="logo" className='w-32' />
                     )}
+                    {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={toggleCollapse}
                         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                     >
-                        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
                     </Button>
                 </SidebarHeader>
                 <SidebarContent>
                     <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                <FileText className="h-4 w-4 mr-2" />
+                        <SidebarMenuItem className={`${getActiveClass('/proposed')} p-3 rounded-lg `}>
+                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
                                 {!isCollapsed && "Proposed"}
+                                <FileText className="h-4  ml-5" />
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                        <SidebarMenuItem>
+
+                        <SidebarMenuItem className={`${getActiveClass('/status')} p-3 rounded-lg `}>
                             <Link to="/status">
-                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                    <BarChart2 className="h-4 w-4 mr-2" />
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
                                     {!isCollapsed && "Status"}
+                                    <BarChart2 className="h-4  ml-9" />
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
 
-                        <SidebarMenuItem>
+                        <SidebarMenuItem className={`${getActiveClass('/customers')} p-3 rounded-lg `}>
                             <Link to="/customers">
-                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                    <Users className="h-4 w-4 mr-2" />
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
                                     {!isCollapsed && "Customer"}
-                                </SidebarMenuButton>
-                            </Link>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <Link to="/lawyers">
-                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                    <UserRoundCheck className="h-4 w-4 mr-2" />
-                                    {!isCollapsed && "Lawyer"}
+                                    <Users className="h-4  ml-4" />
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
 
+                        <SidebarMenuItem className={`${getActiveClass('/lawyers')} p-3 rounded-lg `}>
+                            <Link to="/lawyers">
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
+                                    {!isCollapsed && "Lawyer"}
+                                    <UserRoundCheck className="h-4  ml-8" />
+                                </SidebarMenuButton>
+                            </Link>
+                        </SidebarMenuItem>
                     </SidebarMenu>
+
                 </SidebarContent>
                 <SidebarFooter>
                     <DropdownMenu>
@@ -124,5 +132,4 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
     )
 }
 
-export default CustomSidebar
-
+export default CustomSidebar;
