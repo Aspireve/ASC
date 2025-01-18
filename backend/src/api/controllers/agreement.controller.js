@@ -205,7 +205,9 @@ exports.completeAgreement = async (req, res, next) => {
 
 exports.getAllAgreements = async (req, res, next) => {
   try {
-    const agreement = await AgreementModal.find(req.body);
+    const agreement = await AgreementModal.find(req.body).populate(
+      "company lawyer createdBy"
+    );
     return res.status(200).json(agreement);
   } catch (error) {
     next(error);
