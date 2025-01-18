@@ -36,13 +36,13 @@ const SignupPage: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         console.log("Form submitted:", formValues);
         formValues.picture = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
         formValues.timezone = formValues.timezone || "Asia/Kolkata"; // Default to "Asia/Kolkata" if no timezone selected
         try {
-            axios.post("http://localhost:5000/auth/register", formValues);
+            await axios.post("http://localhost:5000/v1/auth/register", formValues);
             console.log("User signed up successfully");
         }
         catch (error) {

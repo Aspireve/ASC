@@ -78,10 +78,12 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                <UserRoundCheck className="h-4 w-4 mr-2" />
-                                {!isCollapsed && "Lawyer"}
-                            </SidebarMenuButton>
+                            <Link to="/lawyers">
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
+                                    <UserRoundCheck className="h-4 w-4 mr-2" />
+                                    {!isCollapsed && "Lawyer"}
+                                </SidebarMenuButton>
+                            </Link>
                         </SidebarMenuItem>
 
                     </SidebarMenu>
