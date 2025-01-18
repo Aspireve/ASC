@@ -6,6 +6,7 @@ const companyRoutes = require("./company.route");
 const lawyerRoutes = require("./lawyer.route");
 const agreeRoutes = require("./agreements.route");
 const getRoutes = require("./getAllFromMongo.route");
+const geminiRoutes = require("./gemini.route");
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router.use("/company", companyRoutes);
 router.use("/lawyer", lawyerRoutes);
 router.use("/agree", agreeRoutes);
 router.use("/get", getRoutes);
+router.use("/ai", geminiRoutes);
 
 module.exports = router;
