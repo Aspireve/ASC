@@ -64,7 +64,7 @@ const CompanyProfile: React.FC = () => {
         const fetchCompanyData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:5000/v1//company/create", {
+                const response = await axios.get("http://localhost:5000/v1/company/create", {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },

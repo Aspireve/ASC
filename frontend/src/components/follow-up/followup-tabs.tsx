@@ -1,23 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import Accepted from "./accepted";
-import Follow from "./follow";
-import Issues from "./issues";
-import Pending from "./pending";
+import Priority from "./priority";
+import Upcoming from "./upcoming";
 
 const tabItems = [
-    // "Follow",
-    "Pending",
-    "Accepted",
-    "Issues",
+    "Upcoming",
+    "Priority",
 ];
 
-const StatusTabs = () => {
+const FollowupTabs = () => {
     return (
         <Card>
             <CardContent className="pt-4">
-                <Tabs defaultValue="Pending" className="w-full">
+                <Tabs defaultValue="Upcoming" className="w-full">
                     <TabsList className="h-auto bg-transparent border-b rounded-none">
                         <div className="relative flex gap-4 overflow-x-auto scrollbar-none">
                             {tabItems.map((tab) => (
@@ -36,17 +32,11 @@ const StatusTabs = () => {
                             ))}
                         </div>
                     </TabsList>
-                    {/* <TabsContent value="Follow">
-                        <Follow />
-                    </TabsContent> */}
-                    <TabsContent value="Pending">
-                        <Pending />
+                    <TabsContent value="Upcoming">
+                        <Upcoming />
                     </TabsContent>
-                    <TabsContent value="Accepted">
-                        <Accepted />
-                    </TabsContent>
-                    <TabsContent value="Issues">
-                        <Issues />
+                    <TabsContent value="Priority">
+                        <Priority />
                     </TabsContent>
                 </Tabs>
             </CardContent>
@@ -54,4 +44,4 @@ const StatusTabs = () => {
     )
 }
 
-export default StatusTabs
+export default FollowupTabs
