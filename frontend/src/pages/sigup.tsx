@@ -1,12 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
 import BackgroundVd from "../assets/Background Vid.mp4";
+import axios from "axios";
+import * as moment from "moment-timezone"; // Import moment-timezone
 
 interface SignupFormValues {
     name: string;
     email: string;
     phone: string;
     password: string;
+    picture: string;
+    timezone: string;
 }
 
 const SignupPage: React.FC = () => {
@@ -15,10 +19,15 @@ const SignupPage: React.FC = () => {
         email: "",
         phone: "",
         password: "",
+        picture: "",
+        timezone: "",
     });
 
+    // Get a list of all timezones
+    const timezones = moment.tz.names();
+
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ): void => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
@@ -30,7 +39,15 @@ const SignupPage: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         console.log("Form submitted:", formValues);
-        // Add your signup logic here
+        formValues.picture = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
+        formValues.timezone = formValues.timezone || "Asia/Kolkata"; // Default to "Asia/Kolkata" if no timezone selected
+        try {
+            axios.post("http://localhost:5000/auth/register", formValues);
+            console.log("User signed up successfully");
+        }
+        catch (error) {
+            console.error("Error signing up:", error);
+        }
     };
 
     return (
@@ -131,6 +148,33 @@ const SignupPage: React.FC = () => {
                             placeholder="••••••••"
                             required
                         />
+                    </div>
+
+                    {/* Timezone dropdown */}
+                    <div className="mb-5">
+                        <label
+                            htmlFor="timezone"
+                            className="block text-sm font-semibold text-gray-300"
+                        >
+                            Time Zone
+                        </label>
+                        <select
+                            id="timezone"
+                            name="timezone"
+                            value={formValues.timezone}
+                            onChange={handleChange}
+                            className="mt-2 block w-full p-3 rounded-lg bg-gray-800 border border-gray-600 placeholder-gray-500 text-white focus:ring-4 focus:ring-blue-500 focus:outline-none"
+                            required
+                        >
+                            <option value="" disabled>
+                                Select Time Zone
+                            </option>
+                            {timezones.map((timezone) => (
+                                <option key={timezone} value={timezone}>
+                                    {timezone}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <button
