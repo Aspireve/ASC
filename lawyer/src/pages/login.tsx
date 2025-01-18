@@ -25,10 +25,11 @@ const LoginPage: React.FC = () => {
         try {
             const response = axios.post("http://localhost:5000/v1/lawyer/lawyerLogin", formValues);
             console.log("User logged in successfully");
-            console.log(response);
-            localStorage.setItem("usertoken", JSON.stringify((await response).data.token));
-            localStorage.setItem("userData", JSON.stringify((await response).data.user));
-            window.location.href = "/";
+            console.log((await response).data);
+            localStorage.setItem("lawyerID", JSON.stringify((await response).data._id));
+            localStorage.setItem("lawyerName", JSON.stringify((await response).data.name));
+            localStorage.setItem("lawyerEmail", JSON.stringify((await response).data.email));
+            window.location.href = "/status";
 
         } catch (error) {
             console.error("Error logging in:", error);

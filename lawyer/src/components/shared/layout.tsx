@@ -13,37 +13,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
     async function fetchUser() {
         try {
-            const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-            const user_id = userData ? userData.id : null;
-            const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
-            const accessToken = userToken ? userToken.accessToken : null;
-
-            if (!user_id || !accessToken) {
-                console.error("User ID or Access Token is missing");
-                return;
-            }
-
-            const response = await fetch(`http://localhost:5000/v1/users/${user_id}`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user data: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log(data);
-            localStorage.setItem("organizationID", JSON.stringify(data._id));
-
-            // Update the user state
             setUser({
-                name: data.name,
-                email: data.email,
-                avatarUrl: data.avatarUrl || "https://github.com/shadcn.png" // Default avatar if missing
+                name: (localStorage.getItem("lawyerName") || "John Doe").replace(/"/g, ''),
+                email: (localStorage.getItem("lawyerEmail") || "nath@gmaiul.com").replace(/"/g, ''),
+                avatarUrl: "https://github.com/shadcn.png" // Default avatar if missing
             });
-
         } catch (error) {
             console.error("Error fetching user:", error);
         }
