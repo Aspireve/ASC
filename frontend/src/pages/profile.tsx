@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Building2, Mail, FileText, MapPin } from 'lucide-react';
+import axios from "axios";
 
 interface ContactDetails {
     email: string;
@@ -56,6 +57,38 @@ const CompanyProfile: React.FC = () => {
         type: "",
     });
 
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken ? userToken.accessToken : null;
+
+    React.useEffect(() => {
+        const fetchCompanyData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get("http://localhost:5000/v1//company/create", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                if (!response) {
+                    throw new Error("Failed to fetch company data");
+                }
+                console.log(response.data.data[0]);
+                setCompany({
+                    ...response.data.data[0], registrationDetails: {
+                        ...response.data.data[0].registrationDetails,
+                        dateOfIncorporation: response.data.data[0].registrationDetails.dateOfIncorporation.split('T')[0]
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching company data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCompanyData();
+    }, []);
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ): void => {
@@ -81,17 +114,19 @@ const CompanyProfile: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         setStatus('idle');
+        console.log(company);
 
         try {
-            const response = await fetch("/api/company", {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(company),
+            const response = await axios.patch("http://localhost:5000/v1//company/create", company, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
             });
 
-            if (!response.ok) {
+            if (!response) {
                 throw new Error('Failed to update company');
             }
+            console.log('Company updated successfully');
 
             setStatus('success');
         } catch (error) {
