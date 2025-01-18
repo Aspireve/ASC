@@ -2,6 +2,7 @@ const CompanyModal = require("../models/companyprofile");
 const Lawyer = require("../models/lawyer.model");
 const LawyerModal = require("../models/lawyer.model");
 const userModel = require("../models/user.model");
+const mongoose = require("mongoose");
 
 exports.addLawyer = async (req, res, next) => {
   try {
@@ -28,5 +29,18 @@ exports.loginLawyer = async (req, res, next) => {
     return res.status(200).json(lawyer);
   } catch (error) {
     next(error);
+  }
+};
+
+exports.getLawyersForCompany = async (req, res) => {
+  try {
+    const { companyId } = req.query;
+    const lawyers = await Lawyer.find({ company: [companyId] }).populate(
+      "company"
+    );
+
+    res.status(200).json(lawyers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
