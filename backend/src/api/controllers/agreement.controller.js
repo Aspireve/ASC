@@ -54,7 +54,11 @@ exports.createCustomerCombo = async (req, res, next) => {
 
     await customer.save();
 
-    return res.status(201).json(customer);
+    const abc = await Customer.findById(customer._id).populate(
+      "creator creatorCompany customerCompany userId"
+    );
+
+    return res.status(201).json(abc);
   } catch (error) {
     console.log(error);
     next(error);
@@ -83,4 +87,13 @@ exports.createAgreement = async (req, res) => {
   }
 };
 
-// ...existing code...
+exports.addTerms = async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    const { revisionNumber, revisedBy, changes } = req.body;
+
+    const agreement = await AgreementModal.findById();
+  } catch (error) {
+    next(error);
+  }
+};

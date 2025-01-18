@@ -11,6 +11,6 @@ router
 
 router
   .route("/lawyerLogin")
-  .post(authorize(LOGGED_USER), controller.loginLawyer);
+  .post(controller.loginLawyer);
 
 module.exports = router;
