@@ -50,6 +50,10 @@ const AgreementSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, // Who created the agreement
       ref: "Lawyer",
     },
+    company: {
+      type: mongoose.Schema.Types.ObjectId, // Who created the agreement
+      ref: "Company",
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId, // Who created the agreement
       ref: "User",

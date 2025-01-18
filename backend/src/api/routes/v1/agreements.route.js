@@ -9,4 +9,9 @@ router
   .get(authorize(LOGGED_USER), controller.getCustomers)
   .post(authorize(LOGGED_USER), controller.createCustomerCombo);
 
+// router
+//   .route("/agree")
+//   .get(authorize(LOGGED_USER), controller.getAgreements)
+//   .post(authorize(LOGGED_USER), controller.createAgreement);
+
 module.exports = router;

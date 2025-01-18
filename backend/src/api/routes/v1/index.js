@@ -5,6 +5,7 @@ const notificationRoutes = require("./notifications");
 const companyRoutes = require("./company.route");
 const lawyerRoutes = require("./lawyer.route");
 const agreeRoutes = require("./agreements.route");
+const getRoutes = require("./getAllFromMongo.route");
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.use("/notifications", notificationRoutes);
 router.use("/company", companyRoutes);
 router.use("/lawyer", lawyerRoutes);
 router.use("/agree", agreeRoutes);
+router.use("/get", getRoutes);
 
 module.exports = router;
