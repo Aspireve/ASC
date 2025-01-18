@@ -9,6 +9,8 @@ router
   .get(authorize(LOGGED_USER), controller.getCustomers)
   .post(authorize(LOGGED_USER), controller.createCustomerCombo);
 
+router.route("/get").get(controller.getSingleCustomer);
+
 router
   .route("/agreement")
   .post(authorize(LOGGED_USER), controller.createAgreement);
@@ -26,6 +28,10 @@ router
 router
   .route("/complete")
   .post(authorize(LOGGED_USER), controller.completeAgreement);
+
+router
+  .route("/verifyDocument")
+  .post(authorize(LOGGED_USER), controller.verifyAgreement);
 
 router
   .route("/get-all-agreements")

@@ -6,8 +6,11 @@ import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import ImageTool from "@editorjs/image";
 import Table from "@editorjs/table";
-// @ts-expect-error
 import LinkTool from "@editorjs/link";
+import { Loader2 } from "lucide-react";
+import { set } from "date-fns";
+import markdownToTxt from 'markdown-to-txt';
+
 
 interface Agreement {
     title: string;
@@ -15,11 +18,11 @@ interface Agreement {
 }
 
 const CreateAgreement = ({ customerId }: { customerId: string }) => {
-    console.log(customerId)
     const [agreement, setAgreement] = useState<Agreement>({
         title: "",
         content: "",
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken ? userToken.accessToken : null;
@@ -27,15 +30,44 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
     const editorRef = useRef<EditorJS | null>(null);
     const isEditorInitialized = useRef(false);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ): void => {
+    const [organization, setOrganization] = useState<any>({});
+    const [customer, setCustomer] = useState<any>({});
+    const [aiResponse, setAIResponse] = useState<string | null>(null);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setAgreement((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
+
+    useEffect(() => {
+        const fetchOrganizationAndCustomerDetails = async () => {
+            try {
+                const organizationResponse = await axios.get(`http://localhost:5000/v1/company/create`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                console.log(organizationResponse.data);
+
+                setOrganization(organizationResponse.data);
+                const idToCheck = localStorage.getItem("customerIdToCheck");
+                const customerResponse = await axios.get(`http://localhost:5000/v1/agree/get?_id=${idToCheck}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                setCustomer(customerResponse.data);
+            } catch (error) {
+                console.error("Error fetching organization or customer data:", error);
+            }
+        };
+
+        fetchOrganizationAndCustomerDetails();
+    }, [customerId, accessToken]);
 
     useEffect(() => {
         const initEditor = async () => {
@@ -125,7 +157,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 }
             }
         };
-    }, []);
+    }, [agreement.content]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
@@ -140,11 +172,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             const contentPayload = {
                 title: agreement.title,
-                content: finalContent, // Only sending the content field
-                customer: customerId
+                content: finalContent,
+                customer: customerId,
             };
-
-            console.log("Submitting content:", contentPayload);
 
             const response = await axios.post("http://localhost:5000/v1/agree/agreement", contentPayload, {
                 headers: {
@@ -153,7 +183,6 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             });
             console.log("Content submitted successfully:", response.data);
 
-            // Reset the form
             setAgreement({ title: "", content: "" });
             if (editorRef.current && typeof editorRef.current.clear === "function") {
                 editorRef.current.clear();
@@ -163,6 +192,36 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         }
     };
 
+    const handleAISuggestion = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/v1/ai/gaip",
+                {
+                    title: agreement.title,
+                    content: agreement.content,
+                    organizationType: organization.type,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+            console.log("AI suggestions:", response.data.data);
+
+            if (response.data && response.data.data) {
+                const updatedData = markdownToTxt(response.data.data);
+                setAIResponse(updatedData);
+            } else {
+                console.error("No data received from API.");
+            }
+        } catch (error) {
+            console.error("Error getting AI suggestions:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white font-dm-sans p-4">
@@ -171,29 +230,90 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 onSubmit={handleSubmit}
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">Create Agreement</h1>
-                <div className="mb-4">
-                    <label
-                        className="block text-sm font-medium text-gray-700"
-                        htmlFor="title"
-                    >
-                        Title
-                    </label>
-                    <input
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={agreement.title}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
 
                 <div className="mb-4">
-                    <label
-                        className="block text-sm font-medium text-gray-700"
-                        htmlFor="content"
+                    <div className="mb-4">
+                        <input
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Title"
+                            value={agreement.title}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                </div>
+
+                {/* Display Organization Details */}
+                <div className="mb-4">
+                    <h2 className="font-semibold text-lg">Organization Details</h2>
+                    <p>Name: {organization.name}</p>
+                    <p>Address: {organization.address}</p>
+                    <p>Contact: {organization.contact}</p>
+                </div>
+
+                {/* Display Customer Details */}
+                <div className="mb-4">
+                    <h2 className="font-semibold text-lg">Customer Details</h2>
+                    <p>Name: {customer.name}</p>
+                    <p>Email: {customer.email}</p>
+                    <p>Phone: {customer.phone}</p>
+                </div>
+
+                <div className="mb-6">
+                    <button
+                        type="button"
+                        onClick={handleAISuggestion}
+                        disabled={isLoading}
+                        className={`
+                            w-full flex items-center justify-center px-4 py-3 
+                            border border-transparent text-sm font-medium rounded-md
+                            text-white bg-gradient-to-r from-purple-600 to-indigo-600
+                            hover:from-purple-700 hover:to-indigo-700
+                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
+                            transition-all duration-300 ease-in-out
+                            ${isLoading ? 'bg-opacity-75 cursor-not-allowed' : 'hover:shadow-lg'}
+                        `}
                     >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                                <span>Generating AI Suggestions...</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg
+                                    className="w-5 h-5 mr-2"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                                    />
+                                </svg>
+                                Get AI Suggestions
+                            </>
+                        )}
+                    </button>
+                    <div
+                        id="AI responses"
+                        style={{ display: isLoading ? "none" : "block" }}
+                    >
+                        {isLoading ? (
+                            <p></p>
+                        ) : (
+                            <pre>{aiResponse || "No AI suggestions available."}</pre>
+                        )}
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="content">
                         Content
                     </label>
                     <div
