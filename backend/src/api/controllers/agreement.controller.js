@@ -89,10 +89,10 @@ exports.createAgreement = async (req, res) => {
 
 exports.addTerms = async (req, res, next) => {
   try {
-    const { _id } = req.params;
-    const { revisionNumber, revisedBy, changes } = req.body;
+    const { _id } = req.query;
+    const { changes } = req.body;
 
-    const agreement = await AgreementModal.findById();
+    const agreement = await AgreementModal.findById(_id);
   } catch (error) {
     next(error);
   }
