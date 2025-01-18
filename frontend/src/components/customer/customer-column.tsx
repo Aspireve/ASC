@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
+import CustomerDetailSheet from "./customer-detail-sheet";
 
 export type CustomerColumn = {
     customer_id: string;
@@ -19,7 +20,7 @@ export const columns: ColumnDef<CustomerColumn>[] = [
         accessorKey: "customer_id",
         header: "ID",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("customer_id")}</div>
+            <CustomerDetailSheet row={row} />
         ),
     },
     {
