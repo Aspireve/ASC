@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="relative w-full h-screen bg-gray-900 overflow-hidden">
+        <div className="relative w-full h-screen bg-gray-900 overflow-hidden font-dm-sans">
             {/* Background video */}
             <video
                 className="absolute top-0 left-0 w-full h-full object-cover opacity-50"
