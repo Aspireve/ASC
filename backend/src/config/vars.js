@@ -22,4 +22,5 @@ module.exports = {
     password: process.env.EMAIL_PASSWORD,
   },
   Resend: process.env.RESEND,
+  GEMMINI: process.env.GEMMINI,
 };
