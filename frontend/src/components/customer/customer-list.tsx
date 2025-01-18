@@ -40,42 +40,24 @@ const CustomerList = () => {
         React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
-    const data: CustomerColumn[] = [
-        {
-            customer_id: 'CUS-001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '123-456-7890',
-            agreement_name: 'Basic Plan',
-            agreement_number: 'AGR-001',
-            agreement_start: '2022-01-01',
-            agreement_end: '2022-12-31',
-            status: 'Active',
-            created_at: '2022-01-01 12:00:00',
-            updated_at: '2022-01-01 12:00:00',
-        },
-        {
-            customer_id: 'CUS-002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            phone: '987-654-3210',
-            agreement_name: 'Premium Plan',
-            agreement_number: 'AGR-002',
-            agreement_start: '2022-02-01',
-            agreement_end: '2023-01-31',
-            status: 'Inactive',
-            created_at: '2022-02-01 14:00:00',
-            updated_at: '2022-02-01 14:00:00',
-        }
-    ]
+    const [data, setData] = React.useState<CustomerColumn[]>([]);
 
     const { user } = useFetchUser()
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken ? userToken.accessToken : null;
 
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/v1/agree/customer/${user?._id}`)
+                const res = await axios.get(`http://localhost:5000/v1/agree/customer?companyId=${user?.company[0]}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    }
+                })
                 console.log(res.data)
+                const userIds = res.data.map((item: any) => item.userId);
+                setData(userIds)
+                console.log(userIds)
             } catch (error) {
                 console.log(error)
             }

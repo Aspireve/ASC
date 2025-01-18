@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ClipboardPlus, Eye } from "lucide-react";
+import { ClipboardPlus } from "lucide-react";
 import CustomerDetailSheet from "./customer-detail-sheet";
 import { Button } from "@/components/ui/button"
 import {
@@ -7,19 +7,28 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import CreateAgreement from "../agreements/create-agreement";
 
 export type CustomerColumn = {
-    customer_id: string;
+    role: string;
+    company: string[];
+    _id: string;
     name: string;
     email: string;
-    phone: string;
-    agreement_name: string;
-    agreement_number: string;
-    agreement_start: string;
-    agreement_end: string;
-    status: string;
-    created_at: string;
-    updated_at: string;
+    password: string;
+    picture: string;
+    timezone: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
 }
 
 export const columns: ColumnDef<CustomerColumn>[] = [
@@ -29,15 +38,27 @@ export const columns: ColumnDef<CustomerColumn>[] = [
         cell: ({ row }) => (
             <div>
                 <CustomerDetailSheet row={row} />
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button variant="outline" size='icon'><ClipboardPlus /></Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>Create agreement</p>
-                    </TooltipContent>
-                </Tooltip>
-
+                <Sheet>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" size='icon'><ClipboardPlus /></Button>
+                            </SheetTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Create agreement</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
+                        <SheetHeader>
+                            <SheetTitle>Create agreement</SheetTitle>
+                            <SheetDescription>
+                                <p>Create agreement for Customer <span className="font-bold">{row.getValue("name")}</span></p>
+                            </SheetDescription>
+                        </SheetHeader>
+                        <CreateAgreement />
+                    </SheetContent>
+                </Sheet>
             </div>
         )
     },
@@ -45,7 +66,8 @@ export const columns: ColumnDef<CustomerColumn>[] = [
         accessorKey: "customer_id",
         header: "ID",
         cell: ({ row }) => (
-            <div>{row.getValue("customer_id")}</div>
+            // <div>{row.getValue("customer_id")}</div>
+            <div>{row.index + 1}</div>
         ),
     },
     {
@@ -63,45 +85,52 @@ export const columns: ColumnDef<CustomerColumn>[] = [
         ),
     },
     {
-        accessorKey: "phone",
-        header: "Phone",
+        accessorKey: "role",
+        header: "Role",
         cell: ({ row }) => (
-            <div>{row.getValue("phone")}</div>
+            <div>{row.getValue("role")}</div>
         ),
     },
-    {
-        accessorKey: "agreement_name",
-        header: "Agreement Name",
-        cell: ({ row }) => (
-            <div>{row.getValue("agreement_name")}</div>
-        ),
-    },
-    {
-        accessorKey: "agreement_number",
-        header: "Agreement Number",
-        cell: ({ row }) => (
-            <div>{row.getValue("agreement_number")}</div>
-        ),
-    },
-    {
-        accessorKey: "agreement_start",
-        header: "Agreement Start",
-        cell: ({ row }) => (
-            <div>{row.getValue("agreement_start")}</div>
-        ),
-    },
-    {
-        accessorKey: "agreement_end",
-        header: "Agreement End",
-        cell: ({ row }) => (
-            <div>{row.getValue("agreement_end")}</div>
-        ),
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
-        ),
-    },
+    // {
+    //     accessorKey: "phone",
+    //     header: "Phone",
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("phone")}</div>
+    //     ),
+    // },
+    // {
+    //     accessorKey: "agreement_name",
+    //     header: "Agreement Name",
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("agreement_name")}</div>
+    //     ),
+    // },
+    // {
+    //     accessorKey: "agreement_number",
+    //     header: "Agreement Number",
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("agreement_number")}</div>
+    //     ),
+    // },
+    // {
+    //     accessorKey: "agreement_start",
+    //     header: "Agreement Start",
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("agreement_start")}</div>
+    //     ),
+    // },
+    // {
+    //     accessorKey: "agreement_end",
+    //     header: "Agreement End",
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("agreement_end")}</div>
+    //     ),
+    // },
+    // {
+    //     accessorKey: "status",
+    //     header: "Status",
+    //     cell: ({ row }) => (
+    //         <div className="capitalize">{row.getValue("status")}</div>
+    //     ),
+    // },
 ]

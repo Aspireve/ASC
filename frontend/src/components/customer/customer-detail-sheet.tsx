@@ -47,10 +47,14 @@ const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
                         <p className="mt-1 text-sm text-gray-900">{row.getValue("email")}</p>
                     </div>
                     <div>
+                        <h3 className="text-sm font-medium text-gray-500">Role</h3>
+                        <p className="mt-1 text-sm text-gray-900">{row.getValue("role")}</p>
+                    </div>
+                    {/* <div>
                         <h3 className="text-sm font-medium text-gray-500">Phone</h3>
                         <p className="mt-1 text-sm text-gray-900">{row.getValue("phone")}</p>
-                    </div>
-                    <div>
+                    </div> */}
+                    {/* <div>
                         <h3 className="text-sm font-medium text-gray-500">Agreement Name</h3>
                         <p className="mt-1 text-sm text-gray-900">{row.getValue("agreement_name")}</p>
                     </div>
@@ -69,7 +73,7 @@ const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
                     <div>
                         <h3 className="text-sm font-medium text-gray-500">Status</h3>
                         <p className="mt-1 text-sm text-gray-900">{row.getValue("status")}</p>
-                    </div>
+                    </div> */}
                 </div>
             </SheetContent>
         </Sheet>

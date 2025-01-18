@@ -24,11 +24,11 @@ import { Link } from 'react-router-dom';
 interface UserProfile {
     name: string;
     email: string;
-    avatarUrl?: string;
+    role: string;
 }
 
 interface CustomSidebarProps {
-    user: UserProfile;
+    user: Record<string, string> | null;
 }
 
 const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
@@ -43,7 +43,7 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
             <Sidebar className={`transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
                 <SidebarHeader className="flex flex-row justify-between items-center p-4">
                     {!isCollapsed && (
-                        <span className="font-bold text-3xl">Agreed</span>
+                        <img src='/Agreed Wordmark.svg' alt="logo" className='w-32' />
                     )}
                     <Button
                         variant="ghost"
@@ -95,13 +95,13 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                         <DropdownMenuTrigger asChild>
                             <button className="flex items-center w-full p-4 hover:bg-gray-100 transition-colors">
                                 <Avatar className="h-9 w-9">
-                                    <AvatarImage src={user.avatarUrl} alt={user.name} />
+                                    <AvatarImage src={'/Agreed Logo.svg'} alt={user?.name} />
                                     <AvatarFallback><User /></AvatarFallback>
                                 </Avatar>
                                 {!isCollapsed && (
                                     <div className="ml-3 overflow-hidden flex-grow">
-                                        <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                        <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+                                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                                     </div>
                                 )}
                             </button>
