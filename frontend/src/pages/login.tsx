@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import BackgroundVd from "../assets/Background Vid.mp4";
+import axios from "axios";
 
 const LoginPage: React.FC = () => {
     const [formValues, setFormValues] = useState({
@@ -18,10 +19,21 @@ const LoginPage: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         console.log("Form submitted:", formValues);
-        // Add your login logic here
+        try {
+            const response = axios.post("http://localhost:5000/v1/auth/login", formValues);
+            console.log("User logged in successfully");
+            console.log(response);
+            localStorage.setItem("usertoken", JSON.stringify((await response).data.token));
+            localStorage.setItem("user", JSON.stringify((await response).data.user));
+            window.location.href = "/";
+
+        } catch (error) {
+            console.error("Error logging in:", error);
+
+        }
     };
 
     return (
