@@ -1,4 +1,4 @@
-const getWarningDates = () => {
+export const getWarningDates = () => {
   const now = new Date();
   return {
     oneMonthAhead: new Date(now.setMonth(now.getMonth() + 1)),
