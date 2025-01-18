@@ -4,14 +4,17 @@ const UserModel = require("../models/user.model");
 exports.createCompany = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    const company = new CompanyModal(req.body);
-    const savedCompany = await company.save();
     const user = await UserModel.findById(_id);
-    user.company.push(savedCompany._id);
+    const company = await CompanyModal.findByIdAndUpdate(
+      user.company[0],
+      req.body,
+      { new: true }
+    );
+    user.company.push(company._id);
     await user.save();
     return res
       .status(200)
-      .json({ message: "Company created successfully", data: savedCompany });
+      .json({ message: "Company created successfully", data: company });
   } catch (error) {
     next(error);
   }

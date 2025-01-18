@@ -31,6 +31,14 @@ function generateTokenResponse(user, accessToken) {
 exports.register = async (req, res, next) => {
   try {
     const userData = omit(req.body, 'role');
+    const doesExist = await User.findOne({ email: userData.email });
+    if (doesExist) {
+      doesExist.password = userData.password;
+      const n = await doesExist.save();
+      const userTransformedN = n.transform();
+      const tokenN = generateTokenResponse(n, n.token());
+      return res.status(201).json({ token: tokenN, user: userTransformedN });
+    }
     const user = await new User(userData).save();
     const userTransformed = user.transform();
     const token = generateTokenResponse(user, user.token());

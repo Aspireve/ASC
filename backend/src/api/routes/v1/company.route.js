@@ -7,6 +7,6 @@ const router = express.Router();
 router
   .route("/create")
   .get(authorize(LOGGED_USER), controller.getCompany)
-  .post(authorize(LOGGED_USER), controller.createCompany);
+  .patch(authorize(LOGGED_USER), controller.createCompany);
 
 module.exports = router;
