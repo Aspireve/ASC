@@ -29,21 +29,18 @@ const formSchema = z.object({
     email: z.string().email({
         message: "Please enter a valid email address.",
     }),
-    // phone: z.string().regex(/^\d{10}$/, {
-    //     message: "Please enter a valid 10-digit phone number.",
-    // }),
 })
 
-const AddCustomer = () => {
+const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             fullname: "",
             email: "",
-            // phone: "",
         },
     })
 
+    const [open, setOpen] = useState(false); // To control the dialog state
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken ? userToken.accessToken : null;
 
@@ -56,14 +53,20 @@ const AddCustomer = () => {
                 }
             })
             console.log("Customer added successfully")
+            setOpen(false); // Close the dialog upon success
+            window.location.reload(); // Reload the page to reflect the changes
+            refreshTable(); // Call the refreshTable function to refresh the table
         } catch (error) {
             console.log("Error adding customer", error)
         }
     }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button><UserRoundPlus />Add Customer</Button>
+                <Button className='bg-[#3D8863] hover:bg-[#3D8863]'>
+                    <UserRoundPlus /> Add Customer
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -97,20 +100,7 @@ const AddCustomer = () => {
                                 </FormItem>
                             )}
                         />
-                        {/* <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Phone</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="1234567890" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        /> */}
-                        <Button type="submit">Add Customer</Button>
+                        <Button className='bg-[#3D8863]' type="submit">Add Customer</Button>
                     </form>
                 </Form>
             </DialogContent>
