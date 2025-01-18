@@ -10,6 +10,7 @@ interface User {
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null) // Use state to manage user data
+    const currentPath = window.location.pathname.replace(/^\//, '') || 'Home';
 
     async function fetchUser() {
         try {
@@ -32,7 +33,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             {/* Pass user data to CustomSidebar */}
             <CustomSidebar user={user} />
             <main className="flex-1 p-4 overflow-auto">
-                <h1 className="text-2xl font-bold mb-4">Welcome to Lawyer Side</h1>
+                <h1 className="text-2xl font-bold mb-4">
+
+                    {currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}
+
+                </h1>
                 <div>
                     {children}
                 </div>
