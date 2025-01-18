@@ -5,6 +5,7 @@ import SignupPage from "./pages/sigup";
 import LoginPage from "./pages/login";
 import Lawyers from "./components/lawyer/lawyers";
 import CustomerList from "./components/customer/customer-list";
+import CompanyProfile from "./pages/profile";
 
 function App() {
 
@@ -29,6 +30,10 @@ function App() {
           <Route
             path="/customers"
             element={<MainLayout children={<CustomerList />} />}
+          />
+          <Route
+            path="/profile"
+            element={<MainLayout children={<CompanyProfile />} />}
           />
         </Routes>
       </BrowserRouter>
