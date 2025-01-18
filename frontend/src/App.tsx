@@ -3,6 +3,7 @@ import MainLayout from "./components/shared/layout";
 import StatusTabs from "./components/status/status-tabs";
 import SignupPage from "./pages/sigup";
 import LoginPage from "./pages/login";
+import Lawyers from "./components/lawyer/lawyers";
 
 function App() {
 
@@ -19,6 +20,10 @@ function App() {
           <Route
             path="/status"
             element={<MainLayout children={<StatusTabs />} />}
+          />
+          <Route
+            path="/lawyers"
+            element={<MainLayout children={<Lawyers />} />}
           />
         </Routes>
       </BrowserRouter>
