@@ -4,7 +4,7 @@ const Company = require("../models/companyprofile");
 const AgreementModal = require("../models/agreement");
 
 // Get all customers of a certain company or user
-exports.getCustomers = async (req, res) => {
+exports.getCustomers = async (req, res, next) => {
   try {
     const { companyId, userId } = req.query;
     let customers;
