@@ -4,7 +4,10 @@ const { authorize, ADMIN, LOGGED_USER } = require("../../middlewares/auth");
 
 const router = express.Router();
 
-router.route("/addLawyer").post(authorize(LOGGED_USER), controller.addLawyer);
+router
+  .route("/addLawyer")
+  .get(authorize(LOGGED_USER), controller.getLawyersForCompany)
+  .post(authorize(LOGGED_USER), controller.addLawyer);
 
 router
   .route("/lawyerLogin")
