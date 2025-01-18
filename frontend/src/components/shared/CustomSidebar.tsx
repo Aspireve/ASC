@@ -86,11 +86,13 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
-                        <SidebarMenuItem>
+
+
+                        <SidebarMenuItem className={`${getActiveClass('/follow-up')} p-3 rounded-lg `}>
                             <Link to="/follow-up">
-                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                    <Rss className="h-4 w-4 mr-2" />
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
                                     {!isCollapsed && "Follow Up"}
+                                    <UserRoundCheck className="h-4  ml-5" />
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
