@@ -3,6 +3,8 @@ const User = require("../models/user.model");
 const Company = require("../models/companyprofile");
 const AgreementModal = require("../models/agreement");
 const notificationModel = require("../models/notification.model");
+const { sendMail } = require("./mail.controller");
+const { welcome } = require("../services/welcomeTemplate");
 
 // Get all customers of a certain company or user
 exports.getCustomers = async (req, res, next) => {
@@ -84,6 +86,26 @@ exports.createAgreement = async (req, res) => {
     });
 
     await agreement.save();
+
+    const cust = await Customer.findById(customer).populate("userId creator");
+
+    const passwordTemplate = welcome
+      .replace("[Recipient Name]", cust.userId.name)
+      .replace("[Creator Name]", cust.creator.name)
+      .replace("[Agreement Title]", `[${title}]`)
+      .replace("[Recipient Email]", cust.userId.email)
+      .replace("[LINK]", "email")
+      .replace("[YourAppName]", "Vighnotech")
+      .replace("[Year] YourAppName", "2025 Vighnotech");
+
+    await sendMail(
+      "1032210418@tcetmumbai.in",
+      "[Welcome] You have recieved an agreement",
+      passwordTemplate,
+      "info@vighnotech.com"
+    );
+
+    console.log("here")
 
     return res.status(201).json(agreement);
   } catch (error) {
