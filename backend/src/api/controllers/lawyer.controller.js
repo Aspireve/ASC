@@ -1,11 +1,14 @@
 const CompanyModal = require("../models/companyprofile");
 const Lawyer = require("../models/lawyer.model");
 const LawyerModal = require("../models/lawyer.model");
+const userModel = require("../models/user.model");
 
 exports.addLawyer = async (req, res, next) => {
   try {
-    const { _id, ...rest } = req.body;
-    const company = await CompanyModal.findById(_id);
+    const { _id } = req.user;
+    const use = await userModel.findById(_id);
+    const { ...rest } = req.body;
+    const company = await CompanyModal.findById(use.company[0]);
     const newlaywer = new LawyerModal(rest);
     newlaywer.company.push(company._id);
     await newlaywer.save();
