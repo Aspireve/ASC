@@ -4,6 +4,7 @@ import StatusTabs from "./components/status/status-tabs";
 import SignupPage from "./pages/sigup";
 import LoginPage from "./pages/login";
 import Lawyers from "./components/lawyer/lawyers";
+import CreateAgreement from "./pages/createAgreement";
 
 function App() {
 
@@ -24,6 +25,10 @@ function App() {
           <Route
             path="/lawyers"
             element={<MainLayout children={<Lawyers />} />}
+          />
+          <Route
+            path="/agreements/create"
+            element={<MainLayout children={<CreateAgreement />} />}
           />
         </Routes>
       </BrowserRouter>

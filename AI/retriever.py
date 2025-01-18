@@ -191,27 +191,28 @@ def format_docs(docs):
 model = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash", api_key=os.environ["GOOGLE_API_KEY2"], temperature=0.5)
 
+# Define the prompt template correctly
 template = """
 Context: {context}
 Query: {query}
+Title: {title}
 Chat History: {history}
 
 Response Guidelines:
 
 Tone and Approach:
+- Explain things in a simple and beginner-friendly manner.
+- Break down complex concepts into digestible steps with detailed examples.
+- Provide clear, actionable instructions.
+- Avoid jargon or explain any technical terms clearly.
+- Use analogies where helpful to relate abstract concepts to real-world scenarios.
 
-Explain things in a simple and beginner-friendly manner.
-Break down complex concepts into digestible steps with detailed examples.
-Provide clear, actionable instructions.
-Avoid jargon or explain any technical terms clearly.
-Use analogies where helpful to relate abstract concepts to real-world scenarios.
 Core Expertise Areas:
-
 """
 QA_CHAIN_PROMPT = PromptTemplate.from_template(template)
 
 
-def generate_response(query, history, customer_id):
+def generate_response(query, history, customer_id, title):
     try:
         retriever = get_retriever(customer_id)
     except ValueError as e:
@@ -220,18 +221,23 @@ def generate_response(query, history, customer_id):
     def _combine_documents(docs):
         return format_docs(docs)
 
+    # Properly construct the rag_chain
     rag_chain = (
         {
             "context": lambda x: _combine_documents(retriever.invoke(x["query"])),
-            "query": RunnablePassthrough(),
-            "history": RunnablePassthrough(),
+            "query": RunnablePassthrough(),  # Pass query through
+            "history": RunnablePassthrough(),  # Pass history through
+            "title": RunnablePassthrough(),  # Pass title through
         }
-        | QA_CHAIN_PROMPT
-        | model
-        | StrOutputParser()
+        | QA_CHAIN_PROMPT  # Use PromptTemplate
+        | (lambda x: str(x))  # Ensure plain string output from PromptTemplate
+        | StrOutputParser()  # Final string output parser
     )
-    result = rag_chain.invoke(input={"query": query, "history": history})
-    return result
+
+    # Invoke the chain
+    result = rag_chain.invoke(
+        input={"query": query, "history": history, "title": title})
+    return str(result)  # Explicitly convert result to string if necessary
 
 
 def get_retriever(customer_id):

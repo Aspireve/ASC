@@ -1,17 +1,3 @@
-# import sys
-
-# if 'twisted.internet.reactor' in sys.modules:
-#     msg = (
-#         "twisted.internet.reactor already installed. "
-#         "Ensure 'AsyncioSelectorReactor' is installed before importing any Twisted or Scrapy modules."
-#     )
-#     raise Exception(msg)
-
-# # Remove asyncioreactor imports
-# # from twisted.internet import asyncioreactor
-# # asyncioreactor.install()
-
-
 from fastapi import FastAPI, HTTPException, Body, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -53,6 +39,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: List[ChatMessage]
     customer_id: str
+    title: str  
 
 
 class ChatResponse(BaseModel):
@@ -100,18 +87,21 @@ async def chat(request: ChatRequest):
         if msg.role == "user":
             history.append({"human": msg.content, "ai": ""})
         elif msg.role == "assistant" and history:
-            history[-1]["ai"] = msg.content  # Update the last "user" entry with AI response
+            # Update the last "user" entry with AI response
+            history[-1]["ai"] = msg.content
 
     # The query is the content of the last message
     query = request.messages[-1].content
+    title = request.title  # Retrieve the title from the request
 
     # Format history for the response generator
-    formatted_history = "\n".join([f"Human: {h['human']}\nAI: {h['ai']}" for h in history])
+    formatted_history = "\n".join(
+        [f"Human: {h['human']}\nAI: {h['ai']}" for h in history])
 
     # Generate response
-    response = generate_response(query, formatted_history, request.customer_id)
+    response = generate_response(
+        query, formatted_history, request.customer_id, title)
     return ChatResponse(response=response)
-
 
 
 @app.post("/upload_document")
@@ -159,12 +149,14 @@ async def finish_documents(customer_id: str = Body(...)):
 def _update_dataset(customer_id: str, new_directory: str):
     try:
         os.makedirs(new_directory, exist_ok=True)
-        print(f"Updating dataset for customer_id: {customer_id}, new_directory: {new_directory}")
+        print(
+            f"Updating dataset for customer_id: {customer_id}, new_directory: {new_directory}")
         rag_manager.update_customer_dataset(customer_id, new_directory)
         print(f"Dataset updated successfully for customer {customer_id}")
 
     except Exception as e:
-        raise Exception(f"Failed to update dataset for customer {customer_id}. Error: {str(e)}")
+        raise Exception(
+            f"Failed to update dataset for customer {customer_id}. Error: {str(e)}")
 
 
 @app.post("/update_dataset")
