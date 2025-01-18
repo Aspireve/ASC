@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { User, LogOut, Settings, BarChart2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { User, LogOut, Settings, BarChart2, ChevronLeft, ChevronRight, Users, FileText, UserRoundCheck } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -46,7 +46,7 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
             <Sidebar className={`transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
                 <SidebarHeader className="flex flex-row justify-between items-center p-4">
                     {!isCollapsed && (
-                        <span className="font-bold text-3xl">Agreed</span>
+                        <img src='/Agreed Wordmark.svg' alt="logo" className='w-32' />
                     )}
                     <Button
                         variant="ghost"
@@ -60,6 +60,12 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                 <SidebarContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
+                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
+                                <FileText className="h-4 w-4 mr-2" />
+                                {!isCollapsed && "Proposed"}
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
                             <Link to="/status">
                                 <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
                                     <BarChart2 className="h-4 w-4 mr-2" />
@@ -68,6 +74,7 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                             </Link>
                         </SidebarMenuItem>
 
+
                     </SidebarMenu>
                 </SidebarContent>
                 <SidebarFooter>
@@ -75,13 +82,13 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                         <DropdownMenuTrigger asChild>
                             <button className="flex items-center w-full p-4 hover:bg-gray-100 transition-colors">
                                 <Avatar className="h-9 w-9">
-                                    <AvatarImage src={user.avatarUrl} alt={user.name} />
+                                    <AvatarImage src={'/Agreed Logo.svg'} alt={user?.name} />
                                     <AvatarFallback><User /></AvatarFallback>
                                 </Avatar>
                                 {!isCollapsed && (
                                     <div className="ml-3 overflow-hidden flex-grow">
-                                        <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                        <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+                                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                                     </div>
                                 )}
                             </button>

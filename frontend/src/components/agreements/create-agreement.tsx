@@ -14,11 +14,15 @@ interface Agreement {
     content: string;
 }
 
-const CreateAgreement: React.FC = () => {
+const CreateAgreement = ({ customerId }: { customerId: string }) => {
+    console.log(customerId)
     const [agreement, setAgreement] = useState<Agreement>({
         title: "",
         content: "",
     });
+
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken ? userToken.accessToken : null;
 
     const editorRef = useRef<EditorJS | null>(null);
     const isEditorInitialized = useRef(false);
@@ -135,12 +139,18 @@ const CreateAgreement: React.FC = () => {
             }
 
             const contentPayload = {
+                title: agreement.title,
                 content: finalContent, // Only sending the content field
+                customer: customerId
             };
 
             console.log("Submitting content:", contentPayload);
 
-            const response = await axios.post("http://localhost:5000/v1/agreements", contentPayload);
+            const response = await axios.post("http://localhost:5000/v1/agree/agreement", contentPayload, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
             console.log("Content submitted successfully:", response.data);
 
             // Reset the form
