@@ -33,13 +33,17 @@ export type CustomerColumn = {
     __v: number;
 }
 
+
 export const columns: ColumnDef<CustomerColumn>[] = [
     {
         accessorKey: 'action',
         header: '',
         cell: ({ row }) => {
             const customerId = row.original._id; // Access the _id directly from original data
-            if (!customerId) return null; // Guard against undefined _id
+            if (!customerId) return null;
+            const handleClick = () => {
+                localStorage.setItem('customerIdToCheck', customerId);
+            };
 
             return (
                 <div className="flex items-center gap-2">
@@ -48,10 +52,13 @@ export const columns: ColumnDef<CustomerColumn>[] = [
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <SheetTrigger asChild>
+
+
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         className="hover:bg-primary/5 transition-colors"
+                                        onClick={handleClick}
                                     >
                                         <ClipboardPlus className="h-4 w-4" />
                                     </Button>
