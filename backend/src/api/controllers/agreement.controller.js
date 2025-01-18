@@ -70,6 +70,8 @@ exports.createAgreement = async (req, res) => {
     const { _id: createdBy } = req.user;
     const { title, content, customer } = req.body;
 
+    const u = await User.findById(createdBy);
+
     const agreement = new AgreementModal({
       title,
       content,
@@ -77,6 +79,7 @@ exports.createAgreement = async (req, res) => {
       customer,
       status: "Draft",
       effectiveDate: new Date(),
+      company: u.company[0],
     });
 
     await agreement.save();
@@ -87,12 +90,69 @@ exports.createAgreement = async (req, res) => {
   }
 };
 
+exports.approveAgreement = async (req, res, next) => {
+  try {
+    const { _id } = req.query;
+    const { content } = req.body;
+    const agreement = await AgreementModal.findById(_id);
+    agreement.content = content;
+    agreement.status = "Ready";
+    await agreement.save();
+    return res.status(200).json(agreement);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.addTerms = async (req, res, next) => {
   try {
     const { _id } = req.query;
     const { changes } = req.body;
 
     const agreement = await AgreementModal.findById(_id);
+    const customer = await Customer.findById(agreement.customer[0]);
+    agreement.revisions.push({
+      revisionNumber: agreement.revisions.length,
+      changes,
+      revisedBy: customer.userId,
+    });
+    agreement.status = "Issue";
+    await agreement.save();
+    return res.status(200).json(agreement);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.issueToLawyer = async (req, res, next) => {
+  try {
+    const { _id } = req.query;
+    const { content, changes } = req.body;
+
+    const agreement = await AgreementModal.findById(_id);
+    const customer = await Customer.findById(agreement.customer[0]);
+    agreement.content = content;
+    agreement.revisions.push({
+      revisionNumber: agreement.revisions.length,
+      changes,
+      revisedBy: customer.userId,
+    });
+    agreement.status = "IssueToLawyer";
+    await agreement.save();
+    return res.status(200).json(agreement);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.completeAgreement = async (req, res, next) => {
+  try {
+    const { _id } = req.query;
+
+    const agreement = await AgreementModal.findById(_id);
+    agreement.status = "Accepted";
+    agreement.save();
+    return res.status(200).json(agreement);
   } catch (error) {
     next(error);
   }
