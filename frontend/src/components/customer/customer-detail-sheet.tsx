@@ -7,16 +7,29 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { format } from 'date-fns'
 import { CustomerColumn } from "./customer-column"
+import { Eye } from "lucide-react"
 
 const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
     return (
         <Sheet>
-            <SheetTrigger asChild>
-                <Button variant="link"><div className="capitalize">{row.getValue("customer_id")}</div></Button>
-            </SheetTrigger>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <SheetTrigger asChild>
+                        <Button variant="outline" size='icon'><Eye /></Button>
+                    </SheetTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>View</p>
+                </TooltipContent>
+            </Tooltip>
             <SheetContent>
                 <SheetHeader>
                     <SheetTitle>Customer Details</SheetTitle>

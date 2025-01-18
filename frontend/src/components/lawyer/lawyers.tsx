@@ -23,6 +23,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import axios from 'axios'
+import { useFetchUser } from '@/hook/useFetchUser'
 
 // Define the schema for the lawyer form
 const formSchema = z.object({
@@ -49,6 +50,8 @@ type Lawyer = z.infer<typeof formSchema> & { organization_id: string };
 
 const Lawyers: React.FC = () => {
     const [lawyers, setLawyers] = useState<Lawyer[]>([])
+    const { user } = useFetchUser()
+    console.log(user)
 
     // Initialize the form
     const form = useForm<Lawyer>({
@@ -82,12 +85,17 @@ const Lawyers: React.FC = () => {
         }
         fetchLawyers()
 
-        form.reset()
+        // form.reset()
     }
     async function fetchLawyers() {
         try {
-            const response = await axios.get("http://localhost:5000/v1/lawyers")
+            const response = await axios.get(`http://localhost:5000/v1/lawyer/addLawyer?companyId=${user?.company[0]}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
             setLawyers(response.data)
+            console.log(response.data)
         } catch (error) {
             console.error("Error fetching lawyers:", error)
         }
@@ -95,7 +103,7 @@ const Lawyers: React.FC = () => {
     useEffect(() => {
         fetchLawyers()
     }
-        , [])
+        , [user?.company[0]])
 
 
 

@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { UserRoundPlus } from 'lucide-react'
+import axios from 'axios'
 
 const formSchema = z.object({
     fullname: z.string().min(2, {
@@ -28,9 +29,9 @@ const formSchema = z.object({
     email: z.string().email({
         message: "Please enter a valid email address.",
     }),
-    phone: z.string().regex(/^\d{10}$/, {
-        message: "Please enter a valid 10-digit phone number.",
-    }),
+    // phone: z.string().regex(/^\d{10}$/, {
+    //     message: "Please enter a valid 10-digit phone number.",
+    // }),
 })
 
 const AddCustomer = () => {
@@ -39,12 +40,25 @@ const AddCustomer = () => {
         defaultValues: {
             fullname: "",
             email: "",
-            phone: "",
+            // phone: "",
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken ? userToken.accessToken : null;
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
+        try {
+            await axios.post(`http://localhost:5000/v1/agree/customer`, values, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                }
+            })
+            console.log("Customer added successfully")
+        } catch (error) {
+            console.log("Error adding customer", error)
+        }
     }
     return (
         <Dialog>
@@ -83,7 +97,7 @@ const AddCustomer = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="phone"
                             render={({ field }) => (
@@ -95,7 +109,7 @@ const AddCustomer = () => {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
                         <Button type="submit">Add Customer</Button>
                     </form>
                 </Form>

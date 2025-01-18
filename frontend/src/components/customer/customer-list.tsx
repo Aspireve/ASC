@@ -29,6 +29,8 @@ import {
 import { CustomerColumn, columns } from "./customer-column";
 import { ChevronDown } from "lucide-react";
 import AddCustomer from "./add-customer";
+import axios from "axios";
+import { useFetchUser } from "@/hook/useFetchUser";
 
 const CustomerList = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -66,6 +68,20 @@ const CustomerList = () => {
             updated_at: '2022-02-01 14:00:00',
         }
     ]
+
+    const { user } = useFetchUser()
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await axios.get(`http://localhost:5000/v1/agree/customer/${user?._id}`)
+                console.log(res.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchData()
+    }, [user?._id])
 
     const table = useReactTable({
         data,
