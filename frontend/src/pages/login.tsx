@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
             console.log("User logged in successfully");
             console.log(response);
             localStorage.setItem("usertoken", JSON.stringify((await response).data.token));
-            localStorage.setItem("user", JSON.stringify((await response).data.user));
+            localStorage.setItem("userData", JSON.stringify((await response).data.user));
             window.location.href = "/";
 
         } catch (error) {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -22,11 +22,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import axios from 'axios'
 
 // Define the schema for the lawyer form
 const formSchema = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
+    name: z.string().min(2, {
+        message: "name must be at least 2 characters.",
     }),
     email: z.string().email({
         message: "Please enter a valid email address.",
@@ -37,10 +38,14 @@ const formSchema = z.object({
     password: z.string().min(8, {
         message: "Password must be at least 8 characters.",
     }),
+    licenseNumber: z.string().min(2, {
+        message: "licenseNumber must be at least 2 characters.",
+    }),
 })
 
+
 // Define the Lawyer type
-type Lawyer = z.infer<typeof formSchema>
+type Lawyer = z.infer<typeof formSchema> & { organization_id: string };
 
 const Lawyers: React.FC = () => {
     const [lawyers, setLawyers] = useState<Lawyer[]>([])
@@ -49,19 +54,50 @@ const Lawyers: React.FC = () => {
     const form = useForm<Lawyer>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            name: "",
             email: "",
             phone: "",
             password: "",
+            licenseNumber: "",
         },
     })
 
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken ? userToken.accessToken : null;
+
     // Handle form submission
-    function onSubmit(values: Lawyer) {
+    async function onSubmit(values: Lawyer) {
         console.log(values)
-        setLawyers([...lawyers, values])
+        try {
+            await axios.post("http://localhost:5000/v1/lawyer/addLawyer", values, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            console.log("Lawyer added successfully")
+        } catch (error) {
+            console.error("Error adding lawyer:", error)
+
+        }
+        fetchLawyers()
+
         form.reset()
     }
+    async function fetchLawyers() {
+        try {
+            const response = await axios.get("http://localhost:5000/v1/lawyers")
+            setLawyers(response.data)
+        } catch (error) {
+            console.error("Error fetching lawyers:", error)
+        }
+    }
+    useEffect(() => {
+        fetchLawyers()
+    }
+        , [])
+
+
 
     return (
         <div className="container mx-auto p-4">
@@ -74,10 +110,10 @@ const Lawyers: React.FC = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
-                                name="username"
+                                name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Username</FormLabel>
+                                        <FormLabel>Full Name</FormLabel>
                                         <FormControl>
                                             <Input placeholder="johndoe" {...field} />
                                         </FormControl>
@@ -112,6 +148,20 @@ const Lawyers: React.FC = () => {
                                     </FormItem>
                                 )}
                             />
+                            {/* Add licenseNumber firles */}
+                            <FormField
+                                control={form.control}
+                                name="licenseNumber"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>licenseNumber</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="licenseNumber" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="password"
@@ -136,7 +186,7 @@ const Lawyers: React.FC = () => {
                         <TableCaption>List of added lawyers</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Username</TableHead>
+                                <TableHead>name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Phone</TableHead>
                             </TableRow>
@@ -144,7 +194,7 @@ const Lawyers: React.FC = () => {
                         <TableBody>
                             {lawyers.map((lawyer, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{lawyer.username}</TableCell>
+                                    <TableCell>{lawyer.name}</TableCell>
                                     <TableCell>{lawyer.email}</TableCell>
                                     <TableCell>{lawyer.phone}</TableCell>
                                 </TableRow>
