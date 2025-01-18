@@ -17,6 +17,9 @@ const LawyerSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    password: {
+      type: String,
+    },
     company: [
       {
         type: mongoose.Schema.Types.ObjectId,
