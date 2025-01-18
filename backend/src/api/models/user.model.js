@@ -7,6 +7,7 @@ const jwt = require("jwt-simple");
 const uuidv4 = require("uuid/v4");
 const APIError = require("../errors/api-error");
 const { env, jwtSecret, jwtExpirationInterval } = require("../../config/vars");
+const Company = require("./companyprofile");
 
 /**
  * User Roles
@@ -63,12 +64,25 @@ const userSchema = new mongoose.Schema(
  */
 userSchema.pre("save", async function save(next) {
   try {
+    if (this.isNew) {
+      const company = new Company({
+        name: `${this.name}'s Company`,
+        createdBy: this._id,
+        contactDetails: {
+          email: this.email,
+        },
+      });
+      await company.save();
+      this.company = [company._id];
+    }
     if (!this.isModified("password")) return next();
 
     const rounds = env === "test" ? 1 : 10;
 
-    const hash = await bcrypt.hash(this.password, rounds);
-    this.password = hash;
+    if (this.password) {
+      const hash = await bcrypt.hash(this.password, rounds);
+      this.password = hash;
+    }
 
     return next();
   } catch (error) {
