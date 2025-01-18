@@ -6,6 +6,96 @@ const notificationModel = require("../models/notification.model");
 const { sendMail } = require("./mail.controller");
 const { welcome } = require("../services/welcomeTemplate");
 
+function sha1(message) {
+  function rotateLeft(n, s) {
+    return (n << s) | (n >>> (32 - s));
+  }
+
+  function toHexStr(n) {
+    let s = "",
+      v;
+    for (let i = 7; i >= 0; i--) {
+      v = (n >>> (i * 4)) & 0x0f;
+      s += v.toString(16);
+    }
+    return s;
+  }
+  const utf8Encode = new TextEncoder().encode(message);
+  const msg = Array.from(utf8Encode);
+
+  const msgLength = msg.length;
+  msg.push(0x80);
+  while ((msg.length + 8) % 64 !== 0) {
+    msg.push(0);
+  }
+
+  const msgBitLength = msgLength * 8;
+  for (let i = 7; i >= 0; i--) {
+    msg.push((msgBitLength >>> (i * 8)) & 0xff);
+  }
+
+  let h0 = 0x67452301;
+  let h1 = 0xefcdab89;
+  let h2 = 0x98badcfe;
+  let h3 = 0x10325476;
+  let h4 = 0xc3d2e1f0;
+
+  for (let i = 0; i < msg.length; i += 64) {
+    const chunk = msg.slice(i, i + 64);
+
+    const words = [];
+    for (let j = 0; j < 16; j++) {
+      words[j] =
+        (chunk[j * 4] << 24) |
+        (chunk[j * 4 + 1] << 16) |
+        (chunk[j * 4 + 2] << 8) |
+        chunk[j * 4 + 3];
+    }
+    for (let j = 16; j < 80; j++) {
+      words[j] = rotateLeft(
+        words[j - 3] ^ words[j - 8] ^ words[j - 14] ^ words[j - 16],
+        1
+      );
+    }
+    let a = h0;
+    let b = h1;
+    let c = h2;
+    let d = h3;
+    let e = h4;
+
+    for (let j = 0; j < 80; j++) {
+      let f, k;
+      if (j < 20) {
+        f = (b & c) | (~b & d);
+        k = 0x5a827999;
+      } else if (j < 40) {
+        f = b ^ c ^ d;
+        k = 0x6ed9eba1;
+      } else if (j < 60) {
+        f = (b & c) | (b & d) | (c & d);
+        k = 0x8f1bbcdc;
+      } else {
+        f = b ^ c ^ d;
+        k = 0xca62c1d6;
+      }
+      const temp = (rotateLeft(a, 5) + f + e + k + words[j]) >>> 0;
+      e = d;
+      d = c;
+      c = rotateLeft(b, 30);
+      b = a;
+      a = temp;
+    }
+    h0 = (h0 + a) >>> 0;
+    h1 = (h1 + b) >>> 0;
+    h2 = (h2 + c) >>> 0;
+    h3 = (h3 + d) >>> 0;
+    h4 = (h4 + e) >>> 0;
+  }
+  return (
+    toHexStr(h0) + toHexStr(h1) + toHexStr(h2) + toHexStr(h3) + toHexStr(h4)
+  );
+}
+
 // Get all customers of a certain company or user
 exports.getCustomers = async (req, res, next) => {
   try {
@@ -182,9 +272,16 @@ exports.issueToLawyer = async (req, res, next) => {
 
 exports.completeAgreement = async (req, res, next) => {
   try {
+    const { name } = req.user;
     const { _id } = req.query;
 
-    const agreement = await AgreementModal.findById(_id);
+    const agreement = await AgreementModal.findById(_id).populate(
+      "createdBy customer"
+    );
+
+    console.log(agreement.createdBy.name, name);
+    agreement.signature = sha1(`${agreement.createdBy.name} ${name}`);
+
     agreement.status = "Accepted";
     agreement.save();
 
@@ -209,6 +306,22 @@ exports.getAllAgreements = async (req, res, next) => {
       "company lawyer createdBy"
     );
     return res.status(200).json(agreement);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.verifyAgreement = async (req, res, next) => {
+  try {
+    const { _id } = req.query;
+    const { creatorName, customerName } = req.body;
+
+    const agreement = await AgreementModal.findById(_id);
+    const sig = sha1(`${creatorName} ${customerName}`);
+    if (agreement.signature === sig) {
+      return res.status(200).json({ message: "Agreement verified" });
+    }
+    throw new Error("Agreement not verified");
   } catch (error) {
     next(error);
   }

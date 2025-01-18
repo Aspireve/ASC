@@ -59,6 +59,9 @@ const AgreementSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    signature: {
+      type: String,
+    },
   },
   {
     timestamps: true,
