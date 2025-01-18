@@ -1,9 +1,10 @@
 const Customer = require("../models/customer.model");
 const User = require("../models/user.model");
 const Company = require("../models/companyprofile");
+const AgreementModal = require("../models/agreement");
 
 // Get all customers of a certain company or user
-exports.getCustomers = async (req, res) => {
+exports.getCustomers = async (req, res, next) => {
   try {
     const { companyId, userId } = req.query;
     let customers;
@@ -24,7 +25,7 @@ exports.getCustomers = async (req, res) => {
 
     return res.status(200).json(customers);
   } catch (error) {
-    NOT_EXTENDED(error);
+    next(error);
   }
 };
 
@@ -65,13 +66,7 @@ exports.createAgreement = async (req, res) => {
     const { _id: createdBy } = req.user;
     const { title, content, customer } = req.body;
 
-    if (!title || !content || !createdBy || !customer) {
-      return res.status(400).json({
-        message: "Title, content, createdBy, and customer are required",
-      });
-    }
-
-    const agreement = new Agreement({
+    const agreement = new AgreementModal({
       title,
       content,
       createdBy,

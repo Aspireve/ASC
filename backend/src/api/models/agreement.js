@@ -46,16 +46,6 @@ const AgreementSchema = new mongoose.Schema(
     expiryDate: {
       type: Date,
     },
-    isAutoRenewable: {
-      type: Boolean, // Whether the agreement automatically renews
-      default: false,
-    },
-    renewalPeriod: {
-      type: String, // Renewal period (e.g., "1 year", "6 months")
-      required: function () {
-        return this.isAutoRenewable;
-      },
-    },
     lawyer: {
       type: mongoose.Schema.Types.ObjectId, // Who created the agreement
       ref: "Lawyer",
