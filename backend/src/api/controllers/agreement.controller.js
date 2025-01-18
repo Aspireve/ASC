@@ -25,7 +25,7 @@ exports.getCustomers = async (req, res) => {
 
     return res.status(200).json(customers);
   } catch (error) {
-    NOT_EXTENDED(error);
+    next(error);
   }
 };
 
