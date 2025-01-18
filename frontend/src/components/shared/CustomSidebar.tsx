@@ -20,6 +20,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Link } from 'react-router-dom';
 
 interface UserProfile {
     name: string;
@@ -63,10 +64,12 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
-                                <BarChart2 className="h-4 w-4 mr-2" />
-                                {!isCollapsed && "Status"}
-                            </SidebarMenuButton>
+                            <Link to="/status">
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
+                                    <BarChart2 className="h-4 w-4 mr-2" />
+                                    {!isCollapsed && "Status"}
+                                </SidebarMenuButton>
+                            </Link>
                         </SidebarMenuItem>
 
                         <SidebarMenuItem>
