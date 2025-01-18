@@ -33,12 +33,12 @@ exports.createCustomerCombo = async (req, res) => {
   try {
     const { _id } = req.user;
     const use = await User.findById(_id);
-    const { customerCompanyId, userId } = req.body;
+    const { userId } = req.body;
 
     const creator = await User.findById(_id);
     const creatorCompany = await Company.findById(use.company[0]);
-    const customerCompany = await Company.findById(customerCompanyId);
     const user = await User.findById(userId);
+    const customerCompany = await Company.findById(user.company[0]);
 
     if (!creator || !creatorCompany || !customerCompany || !user) {
       return res.status(400).json({
@@ -47,9 +47,9 @@ exports.createCustomerCombo = async (req, res) => {
     }
 
     const customer = new Customer({
-      creator: creatorId,
-      creatorCompany: creatorCompanyId,
-      customerCompany: customerCompanyId,
+      creator: _id,
+      creatorCompany: creatorCompany._id,
+      customerCompany: customerCompany._id,
       userId: userId,
     });
 
