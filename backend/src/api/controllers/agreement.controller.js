@@ -2,6 +2,7 @@ const Customer = require("../models/customer.model");
 const User = require("../models/user.model");
 const Company = require("../models/companyprofile");
 const AgreementModal = require("../models/agreement");
+const notificationModel = require("../models/notification.model");
 
 // Get all customers of a certain company or user
 exports.getCustomers = async (req, res, next) => {
@@ -137,7 +138,7 @@ exports.issueToLawyer = async (req, res, next) => {
       changes,
       revisedBy: customer.userId,
     });
-    agreement.status = "IssueToLawyer";
+    agreement.status = "Ready";
     await agreement.save();
     return res.status(200).json(agreement);
   } catch (error) {
@@ -152,6 +153,25 @@ exports.completeAgreement = async (req, res, next) => {
     const agreement = await AgreementModal.findById(_id);
     agreement.status = "Accepted";
     agreement.save();
+
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + agreement.expiryDate);
+
+    const notifi = new notificationModel({
+      userId: agreement.createdBy,
+      agreement: agreement._id,
+      dateToDisplay: expiryDate,
+    });
+    await notifi.save();
+    return res.status(200).json(agreement);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAllAgreements = async (req, res, next) => {
+  try {
+    const agreement = await AgreementModal.find(req.body);
     return res.status(200).json(agreement);
   } catch (error) {
     next(error);

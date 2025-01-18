@@ -1,5 +1,6 @@
 const CompanyModal = require("../models/companyprofile");
 const UserModel = require("../models/user.model");
+// const emailProvider = require("../services/emails/emailProvider");
 
 exports.createCompany = async (req, res, next) => {
   try {
@@ -23,6 +24,7 @@ exports.createCompany = async (req, res, next) => {
 exports.getCompany = async (req, res, next) => {
   try {
     const { _id } = req.user;
+    // await emailProvider.sendBlank();
     const company = await UserModel.findById(_id).populate("company");
     return res.status(200).json({ data: company.company });
   } catch (error) {

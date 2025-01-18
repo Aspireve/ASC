@@ -44,7 +44,7 @@ const AgreementSchema = new mongoose.Schema(
       type: Date,
     },
     expiryDate: {
-      type: Date,
+      type: Number,
     },
     lawyer: {
       type: mongoose.Schema.Types.ObjectId, // Who created the agreement

@@ -9,9 +9,26 @@ router
   .get(authorize(LOGGED_USER), controller.getCustomers)
   .post(authorize(LOGGED_USER), controller.createCustomerCombo);
 
-// router
-//   .route("/agree")
-//   .get(authorize(LOGGED_USER), controller.getAgreements)
-//   .post(authorize(LOGGED_USER), controller.createAgreement);
+router
+  .route("/agreement")
+  .post(authorize(LOGGED_USER), controller.createAgreement);
+
+router
+  .route("/approve")
+  .post(authorize(LOGGED_USER), controller.approveAgreement);
+
+router.route("/add-terms").post(authorize(LOGGED_USER), controller.addTerms);
+
+router
+  .route("/issue-to-lawyer")
+  .post(authorize(LOGGED_USER), controller.issueToLawyer);
+
+router
+  .route("/complete")
+  .post(authorize(LOGGED_USER), controller.completeAgreement);
+
+router
+  .route("/get-all-agreements")
+  .post(authorize(LOGGED_USER), controller.getAllAgreements);
 
 module.exports = router;
