@@ -61,7 +61,7 @@ class CustomerRAG:
         }
 
         s3 = boto3.client('s3')
-        bucket_name = 'randome-name-for-s3-bucket'
+        bucket_name = 'admissionuploads'
         prefix = f'Dataset_customer{self.customer_id}/'
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
 
@@ -122,7 +122,8 @@ class CustomerRAG:
                                                "source": file_path})
                                 new_documents.append(doc)
                             else:
-                                print(f"Unexpected format in {file_path}: {entry}")
+                                print(
+                                    f"Unexpected format in {file_path}: {entry}")
                     elif isinstance(data, list):
                         for item in data:
                             if isinstance(item, str):
@@ -134,11 +135,13 @@ class CustomerRAG:
                                                "source": file_path})
                                 new_documents.append(doc)
                             else:
-                                print(f"Unexpected list item format in {file_path}: {item}")
+                                print(
+                                    f"Unexpected list item format in {file_path}: {item}")
                     else:
                         print(f"Unsupported JSON structure in {file_path}")
             else:
-                print(f"Unsupported file type: {file_extension} for file {file}")
+                print(
+                    f"Unsupported file type: {file_extension} for file {file}")
 
         if not new_documents:
             print(f"No new documents found in directory {new_directory}")
@@ -160,7 +163,8 @@ class CustomerRAG:
             )
 
         self.vectorstore.add_documents(new_texts)
-        print(f"Added {len(new_texts)} new document chunks to the database for customer {self.customer_id}.")
+        print(
+            f"Added {len(new_texts)} new document chunks to the database for customer {self.customer_id}.")
 
 
 class RAGChatbotManager:
