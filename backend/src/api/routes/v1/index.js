@@ -3,6 +3,7 @@ const userRoutes = require("./user.route");
 const authRoutes = require("./auth.route");
 const notificationRoutes = require("./notifications");
 const companyRoutes = require("./company.route");
+const lawyerRoutes = require("./lawyer.route");
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.use("/auth", authRoutes);
 router.use("/company", notificationRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/company", companyRoutes);
+router.use("/lawyer", lawyerRoutes);
 
 module.exports = router;
