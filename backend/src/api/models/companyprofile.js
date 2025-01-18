@@ -83,16 +83,22 @@ CompanySchema.pre("save", function (next) {
 
 CompanySchema.post("save", async function (doc, next) {
   try {
-    const lawyer = new Lawyer({
-      name: "Mike Ross", // Set default name or dynamically generate
-      email: `${doc.name.toLowerCase().replace(/\s/g, "_")}@gmail.com`,
-      phone: "0000000000",
-      licenseNumber: `LICENSE-${Date.now()}`, // Dynamically generate a unique license number
-      associatedCompanies: [doc._id],
-    });
+    if (doc.isNew) {
+      console.log("here")
+      const lawyer = new Lawyer({
+        name: "Mike Ross", // Set default name or dynamically generate
+        email: `${doc.name
+          .toLowerCase()
+          .replace(/\s/g, "_")}${Date.now()}@gmail.com`,
+        phone: "0000000000",
+        licenseNumber: `LICENSE-${Date.now()}`, // Dynamically generate a unique license number
+        associatedCompanies: [doc._id],
+      });
 
-    await lawyer.save();
-    console.log(`Lawyer created for company: ${doc.name}`);
+      await lawyer.save();
+      console.log(`Lawyer created for company: ${doc.name}`);
+    }
+    next();
   } catch (error) {
     console.error("Error creating lawyer:", error);
     next(error); // Pass error to next middleware if any

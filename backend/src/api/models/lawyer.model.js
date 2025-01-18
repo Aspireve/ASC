@@ -7,7 +7,6 @@ const LawyerSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
       lowercase: true,
     },
     phone: {
@@ -15,7 +14,6 @@ const LawyerSchema = new mongoose.Schema(
     },
     licenseNumber: {
       type: String,
-      unique: true,
     },
     password: {
       type: String,

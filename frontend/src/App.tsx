@@ -4,7 +4,6 @@ import StatusTabs from "./components/status/status-tabs";
 import SignupPage from "./pages/sigup";
 import LoginPage from "./pages/login";
 import Lawyers from "./components/lawyer/lawyers";
-import CustomerList from "./components/customer/customer-list";
 
 function App() {
 
@@ -25,10 +24,6 @@ function App() {
           <Route
             path="/lawyers"
             element={<MainLayout children={<Lawyers />} />}
-          />
-          <Route
-            path="/customers"
-            element={<MainLayout children={<CustomerList />} />}
           />
         </Routes>
       </BrowserRouter>
