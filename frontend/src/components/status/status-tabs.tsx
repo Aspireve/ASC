@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 const tabItems = [
     "Follow",
     "Accepted",
-    "pending",
-    "issues",
+    "Pending",
+    "Issues",
 ];
 
 const StatusTabs = () => {
@@ -38,10 +38,10 @@ const StatusTabs = () => {
                     <TabsContent value="Accepted">
                         Accepted
                     </TabsContent>
-                    <TabsContent value="pending">
+                    <TabsContent value="Pending">
                         Pending
                     </TabsContent>
-                    <TabsContent value="issues">
+                    <TabsContent value="Issues">
                         Issues
                     </TabsContent>
                 </Tabs>
