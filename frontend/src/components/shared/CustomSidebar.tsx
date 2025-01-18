@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { User, LogOut, Settings, FileText, BarChart2, Users, ChevronLeft, ChevronRight, UserRoundCheck } from 'lucide-react'
+import { User, LogOut, Settings, FileText, BarChart2, Users, ChevronLeft, ChevronRight, UserRoundCheck, Rss } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -84,6 +84,14 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                                 <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
                                     <UserRoundCheck className="h-4 w-4 mr-2" />
                                     {!isCollapsed && "Lawyer"}
+                                </SidebarMenuButton>
+                            </Link>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <Link to="/follow-up">
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''}`}>
+                                    <Rss className="h-4 w-4 mr-2" />
+                                    {!isCollapsed && "Follow Up"}
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
