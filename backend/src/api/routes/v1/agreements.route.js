@@ -9,6 +9,8 @@ router
   .get(authorize(LOGGED_USER), controller.getCustomers)
   .post(authorize(LOGGED_USER), controller.createCustomerCombo);
 
+router.route("/get").get(controller.getSingleCustomer);
+
 router
   .route("/agreement")
   .post(authorize(LOGGED_USER), controller.createAgreement);

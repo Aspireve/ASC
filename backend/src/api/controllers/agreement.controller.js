@@ -32,6 +32,18 @@ exports.getCustomers = async (req, res, next) => {
   }
 };
 
+exports.getSingleCustomer = async (req, res, next) => {
+  try {
+    const { _id } = req.query;
+    const customer = await Customer.findById(_id).populate(
+      "creator creatorCompany customerCompany userId"
+    );
+    return res.status(200).json(customer);
+  } catch (error) {
+    next(error);
+  }
+}
+
 // Create a user, company, and customer company combo
 exports.createCustomerCombo = async (req, res, next) => {
   try {
