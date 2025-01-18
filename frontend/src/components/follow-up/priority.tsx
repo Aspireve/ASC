@@ -32,12 +32,9 @@ import axios from "axios";
 
 const Priority = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-
     const [data, setData] = React.useState<PriorityColumn[]>([]);
 
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
@@ -50,25 +47,25 @@ const Priority = () => {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     }
-                })
-                console.log(res.data)
+                });
+                console.log(res.data);
                 const combined = [...res.data.oneDayAhead, ...res.data.oneWeekAhead, ...res.data.oneMonthAhead].map((item) => ({
                     read: item.read,
                     _id: item._id,
                     userId: item.userId,
-                    agreement: item.agreement._id, // Extract the agreement ID
-                    title: item.agreement.title, // Extract the title
+                    agreement: item.agreement._id,
+                    title: item.agreement.title,
                     dateToDisplay: item.dateToDisplay,
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt,
                 }));
-                setData(combined)
+                setData(combined);
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
-        }
-        fetchData()
-    }, [])
+        };
+        fetchData();
+    }, []);
 
     const table = useReactTable({
         data,
@@ -88,21 +85,26 @@ const Priority = () => {
             rowSelection,
         },
     });
+
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between py-4">
-                <Input
-                    placeholder="Filter title..."
-                    value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("title")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            <div className="flex items-center justify-between py-4 px-6">
+                {/* Updated Filter Input */}
+                <div className="flex-1">
+                    <Input
+                        placeholder="Filter title..."
+                        value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("title")?.setFilterValue(event.target.value)
+                        }
+                        className="rounded-lg border-2 border-gray-300 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-3 w-full md:w-64"
+                    />
+                </div>
+                {/* Dropdown Menu for Columns */}
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="ml-auto">
+                            <Button variant="outline" className="ml-auto rounded-md px-4 py-2">
                                 Columns <ChevronDown />
                             </Button>
                         </DropdownMenuTrigger>
@@ -122,29 +124,28 @@ const Priority = () => {
                                         >
                                             {column.id}
                                         </DropdownMenuCheckboxItem>
-                                    )
+                                    );
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </div>
-            <div className="rounded-md border">
+            {/* Updated Table Styling */}
+            <div className="rounded-lg border border-gray-200 shadow-lg overflow-hidden">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-gray-100 text-gray-700">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="px-4 py-2 text-sm font-medium">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ))}
                             </TableRow>
                         ))}
                     </TableHeader>
@@ -154,9 +155,10 @@ const Priority = () => {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    className="border-t hover:bg-gray-50"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className="px-4 py-3 text-sm">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -169,7 +171,7 @@ const Priority = () => {
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 text-center"
+                                    className="h-24 text-center text-gray-500"
                                 >
                                     No results.
                                 </TableCell>
@@ -178,7 +180,7 @@ const Priority = () => {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex items-center justify-end space-x-2 py-4 px-6">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -189,6 +191,7 @@ const Priority = () => {
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
+                        className="rounded-md px-4 py-2"
                     >
                         Previous
                     </Button>
@@ -197,13 +200,14 @@ const Priority = () => {
                         size="sm"
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
+                        className="rounded-md px-4 py-2"
                     >
                         Next
                     </Button>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Priority
+export default Priority;
