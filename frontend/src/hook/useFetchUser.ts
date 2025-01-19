@@ -38,7 +38,7 @@ export const useFetchUser = () => {
                 }
 
                 const response = await fetch(
-                    `https://asc-cuhd.onrender.com/v1/users/${user_id}`,
+                    `http://localhost:5000/v1/users/${user_id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,

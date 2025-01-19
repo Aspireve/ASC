@@ -47,7 +47,7 @@ const ProposedPending = () => {
 
             try {
                 const res = await axios.post(
-                    `https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`,
+                    `http://localhost:5000/v1/agree/get-all-agreements`,
                     { status: "Ready" },
                     {
                         headers: {

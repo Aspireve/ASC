@@ -42,20 +42,16 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             [name]: value,
         }));
     };
-
-    const [lmaoNo, setLmaoNo] = useState(false);
     useEffect(() => {
         console.log(agreement.content)
-        if (agreement && agreement.content && JSON.parse(agreement?.content)?.time === 1737245451442) {
-            setLmaoNo(true);
-        }
+
     }, [agreement]);
 
     useEffect(() => {
         const fetchOrganizationAndCustomerDetails = async () => {
             try {
                 const organizationResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/company/create`,
+                    `http://localhost:5000/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -67,7 +63,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 setOrganization(organizationResponse.data);
                 const idToCheck = localStorage.getItem("customerIdToCheck");
                 const customerResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
+                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -196,21 +192,16 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         e.preventDefault();
 
         try {
-            let finalContent = agreement.content;
-
-            if (editorRef.current) {
-                const outputData = await editorRef.current.save();
-                finalContent = JSON.stringify(outputData);
-            }
 
             const contentPayload = {
                 title: agreement.title,
-                content: finalContent,
+                content: agreement.content, // No need for DOM manipulation
                 customer: customerId,
             };
 
+
             const response = await axios.post(
-                "https://asc-cuhd.onrender.com/v1/agree/agreement",
+                "http://localhost:5000/v1/agree/agreement",
                 contentPayload,
                 {
                     headers: {
@@ -238,7 +229,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "https://asc-cuhd.onrender.com/v1/ai/gaip",
+                "http://localhost:5000/v1/ai/gaip",
                 {
                     title: agreement.title,
                     content: agreement.content,
@@ -378,15 +369,16 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     >
                         Content
                     </label>
-                    {lmaoNo ? (
-                        <Markdown>{JSON.parse(agreement?.content)?.blocks?.[0]?.data?.text}</Markdown>
-                    ) : (
-                        <div
-                            id="editorjs"
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-4"
-                            style={{ minHeight: "400px" }}
-                        />
-                    )}
+
+                    <input
+                        type="text"
+                        name="content"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-4"
+                        style={{ minHeight: "400px" }}
+                        onChange={(e) => setAgreement({ ...agreement, content: e.target.value })}
+                        id="content2"
+                    />
+
                 </div>
 
                 <button

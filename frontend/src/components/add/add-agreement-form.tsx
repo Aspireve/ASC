@@ -57,7 +57,7 @@ export default function AddAgreementForm() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
         try {
-            const res = await axios.post(`https://asc-cuhd.onrender.com/v1/prev/prev`, {
+            const res = await axios.post(`http://localhost:5000/v1/prev/prev`, {
                 name: values.name,
                 email: values.email,
                 title: values.title,

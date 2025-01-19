@@ -73,7 +73,7 @@ const Lawyers: React.FC = () => {
     async function onSubmit(values: Lawyer) {
         console.log(values)
         try {
-            await axios.post("https://asc-cuhd.onrender.com/v1/lawyer/addLawyer", values, {
+            await axios.post("http://localhost:5000/v1/lawyer/addLawyer", values, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -91,7 +91,7 @@ const Lawyers: React.FC = () => {
     }
     async function fetchLawyers() {
         try {
-            const response = await axios.get(`https://asc-cuhd.onrender.com/v1/lawyer/addLawyer?companyId=${user?.company[0]}`, {
+            const response = await axios.get(`http://localhost:5000/v1/lawyer/addLawyer?companyId=${user?.company[0]}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

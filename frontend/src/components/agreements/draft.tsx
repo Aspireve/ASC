@@ -1,16 +1,8 @@
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import EditorJS from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import List from "@editorjs/list";
-import ImageTool from "@editorjs/image";
-import Table from "@editorjs/table";
-import LinkTool from "@editorjs/link";
-import RawTool from "@editorjs/raw";
 import { Loader2 } from "lucide-react";
 import Markdown from "react-markdown";
-import { GeminiTool } from "./gemini";
 
 interface Agreement {
     title: string;
@@ -22,81 +14,17 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         title: "",
         content: "",
     });
-    const [contentData, setContentData] = useState(`AGREEMENT OF PURCHASE
-This agreement is entered into by and between __________________ (“Institution”) and __________________ (“Seller”).
-WHEREAS, the Seller desires to sell to the Institution a comprehensive collection of __________________ (“Collection”), as more particularly described in the attached inventory (Attachment A), which is incorporated herein by reference; and,
- WHEREAS, the Institution deems it in its interest to acquire the Collection for custodial care and appropriate service to the public, and agrees to purchase the Collection under the terms hereafter stated;
-NOW, THEREFORE, the parties hereby agree as follows:
-
-1) Purchase
-The Seller agrees to sell, and the Institution agrees to buy, the Collection for a total purchase price of __________ (“Purchase Price”). The Institution shall initiate payment of the Purchase Price immediately after receipt and satisfactory inspection of the Collection.
-
-2) Copyright
-The Seller and Institution agree to one of the following options:
-a) The Seller hereby dedicates to the public domain such intellectual property as the Seller may own in the Collection.
- OR
- b) The Seller hereby transfers and assigns to the Institution such intellectual property as the Seller may own in the Collection.
- OR
- c) The Seller hereby dedicates to the public domain such intellectual property as the Seller may own in the Collection, subject to the following exceptions:
- _________________________________________________________________.
- OR
- d) The Seller reserves all rights in such intellectual property as the Seller may own in the Collection, subject to the uses identified in Attachment B, which is incorporated herein by reference.
-
-3) Shipping
-a) Costs. The Seller will arrange and pay for shipping the Collection to the Institution.
- b) Risk of Loss. The Seller bears responsibility for the Collection, including the risk of loss or damage, until it arrives at the Institution. The Seller is responsible for purchasing private insurance for shipment if desired.
- c) Inspection and Acceptance.
-The Institution will have 90 days after receipt to inspect the Collection for inventory accuracy and condition.
-If there is a significant discrepancy (defined as __________________), the Institution may refuse the Collection and withhold payment.
-If unresolved, the Collection will be returned to the Seller at the Seller’s expense unless the discrepancy is cured within 90 days of notice or any later time agreed upon by both parties.
-The Institution will indicate acceptance or rejection of the Collection in writing. For rejected or missing items, payment will be reduced by $___ per item or the Institution may accept alternative replacements.
-
-4) Warranties and Indemnifications
-a) Warranty of Title. The Seller represents and warrants they are the lawful owner of the Collection and have full authority to sell it free of encumbrances.
- b) Authority to Sign Agreement. The Seller warrants they have the necessary authority to sign this agreement.
- c) Seller Indemnification. The Seller agrees to indemnify the Institution against all claims, lawsuits, damages, or expenses (including attorneys' fees) arising from the Seller’s breach of warranties or undertakings.
-
-5) Publicity
-The Seller must obtain prior written approval from the Institution to use its trademarks, trade names, images, or holdings (“Proprietary Marks”) in any medium. Approved uses in the same context and format do not require additional approval.
-
-6) Notice
-All required notices must be in writing and sent to _________________________ via _________________________. Notice becomes effective when given.
-
-7) Miscellaneous
-a) Nature of Relationship. This agreement does not create a partnership or joint venture.
- b) No Waiver. Modifications or waivers must be in writing. A waiver of one breach does not waive subsequent breaches.
- c) Severability. If any provision is invalid, the remaining provisions remain in effect.
- d) Force Majeure. Performance is excused during unforeseen events like government restrictions, war, or natural disasters beyond the parties' control.
- e) Captions. Section headings are for convenience only and not for interpreting the agreement.
- f) Counterparts. This agreement may be signed in counterparts, each being deemed an original.
- g) Assignment. Neither party may assign this agreement without the other's written consent.
- h) Entire Agreement. This agreement supersedes prior agreements and constitutes the entire understanding.
- i) Choice of Law and Venue. This agreement is governed by the laws of __________________, with venue exclusively in the courts of __________________.
-
-Effective Date and Signatures
-The effective date of this agreement is the last date of signature below.
-For the Institution
- By: ______________________________
- Name: ___________________________
- Address: _________________________
- Date: ____________________________
-For the Seller
- By: ______________________________
- Date: ____________________________
-
-This formatted version ensures better readability while maintaining the legal structure and content.
-`);
+    const [contentData, setContentData] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [organization, setOrganization] = useState<any>({});
     const [customer, setCustomer] = useState<any>({});
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [aiResponse, setAIResponse] = useState<string | null>(null);
     const [agreements, setAgreements] = useState<any[]>([]);
 
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken?.accessToken;
-
-    const editorRef = useRef<EditorJS | null>(null);
-    const isEditorInitialized = useRef(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const { name, value } = e.target;
@@ -104,7 +32,7 @@ This formatted version ensures better readability while maintaining the legal st
         setAgreement((prev) => ({
             ...prev,
             [name]: value,
-            content: JSON.stringify({ time: 1737245451442 }),
+            content: value,
         }));
     };
 
@@ -114,7 +42,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const res = await axios.post(
-                    `https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`,
+                    `http://localhost:5000/v1/agree/get-all-agreements`,
                     { status: "Draft" },
                     {
                         headers: {
@@ -123,22 +51,21 @@ This formatted version ensures better readability while maintaining the legal st
                     }
                 );
 
-                // Fetch the agreementId from localStorage
                 const agreementId = localStorage.getItem("customerIdToCheck");
 
                 if (res.data && agreementId) {
-                    // Find the agreement with the matching _id
                     const matchingAgreement = res.data.find((item: { _id: string; }) => item._id === agreementId);
 
                     if (matchingAgreement) {
-                        // Set the matching agreement in state
                         setAgreements(matchingAgreement);
+                        setContentData(matchingAgreement.content);
+                        setName(matchingAgreement.createdBy.name);
+                        setEmail(matchingAgreement.createdBy.email);
                         console.log("Matching Agreement:", matchingAgreement);
                     } else {
                         console.warn("No matching agreement found for the given ID.");
                     }
                 } else if (res.data?.[0]) {
-                    // Fallback: Set the first agreement if no agreementId is in localStorage
                     setAgreements(res.data[0]);
                     console.log("Default Agreement:", res.data[0]);
                 }
@@ -156,7 +83,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const organizationResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/company/create`,
+                    `http://localhost:5000/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -169,7 +96,7 @@ This formatted version ensures better readability while maintaining the legal st
                 if (!idToCheck) return;
 
                 const customerResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
+                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -178,6 +105,7 @@ This formatted version ensures better readability while maintaining the legal st
                 );
 
                 setCustomer(customerResponse.data);
+                setContentData(customerResponse.data.content);
             } catch (error) {
                 console.error("Error fetching organization or customer data:", error);
             }
@@ -186,119 +114,11 @@ This formatted version ensures better readability while maintaining the legal st
         fetchOrganizationAndCustomerDetails();
     }, [customerId, accessToken]);
 
-    useEffect(() => {
-        const initEditor = async () => {
-            if (!isEditorInitialized.current) {
-                try {
-                    const editor = new EditorJS({
-                        holder: "editorjs",
-                        placeholder: "Start typing your content...",
-                        data: agreement.content ? JSON.parse(agreement.content) : {},
-                        onChange: async () => {
-                            try {
-                                const outputData = await editor?.save();
-                                if (outputData) {
-                                    setAgreement((prev) => ({
-                                        ...prev,
-                                        content: JSON.stringify(outputData),
-                                    }));
-                                }
-                            } catch (error) {
-                                console.error("Failed to save editor data:", error);
-                            }
-                        },
-                        tools: {
-                            header: {
-                                class: Header,
-                                config: {
-                                    placeholder: "Enter header text",
-                                },
-                                inlineToolbar: true,
-                            },
-                            raw: RawTool,
-                            aiagent: {
-                                class: GeminiTool,
-                                config: {
-                                    setAgreement,
-                                    organization,
-                                    customer,
-                                    agreement
-                                },
-                                inlineToolbar: true,
-                            },
-                            list: {
-                                class: List,
-                                inlineToolbar: true,
-                            },
-                            image: {
-                                class: ImageTool,
-                                config: {
-                                    uploader: {
-                                        uploadByFile(file: File) {
-                                            return new Promise((resolve, reject) => {
-                                                const reader = new FileReader();
-                                                reader.onload = () => {
-                                                    resolve({
-                                                        success: 1,
-                                                        file: {
-                                                            url: reader.result as string,
-                                                        },
-                                                    });
-                                                };
-                                                reader.onerror = reject;
-                                                reader.readAsDataURL(file);
-                                            });
-                                        },
-                                    },
-                                },
-                            },
-                            table: Table,
-                            linkTool: {
-                                class: LinkTool,
-                                config: {
-                                    endpoint: "/your-link-endpoint",
-                                },
-                            },
-                        },
-                        inlineToolbar: true,
-                    });
-
-                    await editor.isReady;
-                    editorRef.current = editor;
-                    isEditorInitialized.current = true;
-                } catch (error) {
-                    console.error("Editor initialization failed:", error);
-                }
-            }
-        };
-
-        initEditor();
-
-        return () => {
-            if (editorRef.current?.destroy) {
-                try {
-                    editorRef.current.destroy();
-                    editorRef.current = null;
-                    isEditorInitialized.current = false;
-                } catch (error) {
-                    console.error("Editor cleanup failed:", error);
-                }
-            }
-        };
-    }, [agreement.content, organization, customer]);
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         if (!accessToken) return;
 
         try {
-            let finalContent = agreement.content;
-
-            if (editorRef.current) {
-                const outputData = await editorRef.current.save();
-                finalContent = JSON.stringify(outputData);
-            }
-
             const contentPayload = {
                 title: agreements.title,
                 content: contentData,
@@ -306,7 +126,7 @@ This formatted version ensures better readability while maintaining the legal st
             };
 
             await axios.post(
-                `https://asc-cuhd.onrender.com/v1/agree/approve?_id=${agreements._id}`,
+                `http://localhost:5000/v1/agree/approve?_id=${agreements._id}`,
                 contentPayload,
                 {
                     headers: {
@@ -327,7 +147,7 @@ This formatted version ensures better readability while maintaining the legal st
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "https://asc-cuhd.onrender.com/v1/ai/gaip",
+                "http://localhost:5000/v1/ai/gaip",
                 {
                     title: agreements.title,
                     content: agreement.content,
@@ -384,9 +204,8 @@ This formatted version ensures better readability while maintaining the legal st
 
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
-                    <p>Name: {customer?.userId?.name}</p>
-                    <p>Email: {customer?.userId?.email}</p>
-                    <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
+                    <p>Name: {name}</p>
+                    <p>Email: {email}</p>
                 </div>
 
                 <div className="mb-6">

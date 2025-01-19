@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
         e.preventDefault();
         console.log("Form submitted:", formValues);
         try {
-            const response = axios.post("https://asc-cuhd.onrender.com/v1/auth/login", formValues);
+            const response = axios.post("http://localhost:5000/v1/auth/login", formValues);
             console.log("User logged in successfully");
             toast.success("User logged in successfully");
             console.log(response);

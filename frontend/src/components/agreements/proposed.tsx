@@ -23,74 +23,11 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         title: "",
         content: "",
     });
-    const [contentData, setContentData] = useState(`
-AGREEMENT OF PURCHASE
-This agreement is entered into by and between  (“Institution”) and  (“Seller”).
-WHEREAS, the Seller desires to sell to the Institution a comprehensive collection of  (“Collection”), as more particularly described in the attached inventory (Attachment A), which is incorporated herein by reference; and,
- WHEREAS, the Institution deems it in its interest to acquire the Collection for custodial care and appropriate service to the public, and agrees to purchase the Collection under the terms hereafter stated;
-NOW, THEREFORE, the parties hereby agree as follows:
-
-1) Purchase
-The Seller agrees to sell, and the Institution agrees to buy, the Collection for a total purchase price of __________ (“Purchase Price”). The Institution shall initiate payment of the Purchase Price immediately after receipt and satisfactory inspection of the Collection.
-
-2) Copyright
-The Seller and Institution agree to one of the following options:
-a) The Seller hereby dedicates to the public domain such intellectual property as the Seller may own in the Collection.
- OR
- b) The Seller hereby transfers and assigns to the Institution such intellectual property as the Seller may own in the Collection.
- OR
- c) The Seller hereby dedicates to the public domain such intellectual property as the Seller may own in the Collection, subject to the following exceptions:
- _________________________________________________________________.
- OR
- d) The Seller reserves all rights in such intellectual property as the Seller may own in the Collection, subject to the uses identified in Attachment B, which is incorporated herein by reference.
-
-3) Shipping
-a) Costs. The Seller will arrange and pay for shipping the Collection to the Institution.
- b) Risk of Loss. The Seller bears responsibility for the Collection, including the risk of loss or damage, until it arrives at the Institution. The Seller is responsible for purchasing private insurance for shipment if desired.
- c) Inspection and Acceptance.
-The Institution will have 90 days after receipt to inspect the Collection for inventory accuracy and condition.
-If there is a significant discrepancy (defined as __________________), the Institution may refuse the Collection and withhold payment.
-If unresolved, the Collection will be returned to the Seller at the Seller’s expense unless the discrepancy is cured within 90 days of notice or any later time agreed upon by both parties.
-The Institution will indicate acceptance or rejection of the Collection in writing. For rejected or missing items, payment will be reduced by $___ per item or the Institution may accept alternative replacements.
-
-4) Warranties and Indemnifications
-a) Warranty of Title. The Seller represents and warrants they are the lawful owner of the Collection and have full authority to sell it free of encumbrances.
- b) Authority to Sign Agreement. The Seller warrants they have the necessary authority to sign this agreement.
- c) Seller Indemnification. The Seller agrees to indemnify the Institution against all claims, lawsuits, damages, or expenses (including attorneys' fees) arising from the Seller’s breach of warranties or undertakings.
-
-5) Publicity
-The Seller must obtain prior written approval from the Institution to use its trademarks, trade names, images, or holdings (“Proprietary Marks”) in any medium. Approved uses in the same context and format do not require additional approval.
-
-6) Notice
-All required notices must be in writing and sent to _________________________ via _________________________. Notice becomes effective when given.
-
-7) Miscellaneous
-a) Nature of Relationship. This agreement does not create a partnership or joint venture.
- b) No Waiver. Modifications or waivers must be in writing. A waiver of one breach does not waive subsequent breaches.
- c) Severability. If any provision is invalid, the remaining provisions remain in effect.
- d) Force Majeure. Performance is excused during unforeseen events like government restrictions, war, or natural disasters beyond the parties' control.
- e) Captions. Section headings are for convenience only and not for interpreting the agreement.
- f) Counterparts. This agreement may be signed in counterparts, each being deemed an original.
- g) Assignment. Neither party may assign this agreement without the other's written consent.
- h) Entire Agreement. This agreement supersedes prior agreements and constitutes the entire understanding.
- i) Choice of Law and Venue. This agreement is governed by the laws of __________________, with venue exclusively in the courts of __________________.
-
-Effective Date and Signatures
-The effective date of this agreement is the last date of signature below.
-For the Institution
- By: ______________________________
- Name: ___________________________
- Address: _________________________
- Date: ____________________________
-For the Seller
- By: ______________________________
- Date: ____________________________
-
-This formatted version ensures better readability while maintaining the legal structure and content.
-
-This formatted version ensures better readability while maintaining the legal structure and content.`);
+    const [contentData, setContentData] = useState("")
     const [isLoading, setIsLoading] = useState(false);
     const [organization, setOrganization] = useState<any>({});
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [customer, setCustomer] = useState<any>({});
     const [aiResponse, setAIResponse] = useState<string | null>(null);
     const [agreements, setAgreements] = useState<any>({});  // Changed from array to object
@@ -106,7 +43,7 @@ This formatted version ensures better readability while maintaining the legal st
 
         try {
             await axios.post(
-                `https://asc-cuhd.onrender.com/v1/agree/add-terms?_id=${agreements._id}`,  // Fixed quote
+                `http://localhost:5000/v1/agree/add-terms?_id=${agreements._id}`,  // Fixed quote
                 { changes },  // Send changes as an object
                 {
                     headers: {
@@ -138,7 +75,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const res = await axios.post(
-                    `https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`,
+                    `http://localhost:5000/v1/agree/get-all-agreements`,
                     { status: "Ready" },
                     {
                         headers: {
@@ -157,6 +94,9 @@ This formatted version ensures better readability while maintaining the legal st
                     if (matchingAgreement) {
                         // Set the matching agreement in state
                         setAgreements(matchingAgreement);
+                        setContentData(matchingAgreement.content);
+                        setName(matchingAgreement.createdBy.name);
+                        setEmail(matchingAgreement.createdBy.email);
                         console.log("Matching Agreement:", matchingAgreement);
                     } else {
                         console.warn("No matching agreement found for the given ID.");
@@ -179,7 +119,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const organizationResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/company/create`,
+                    `http://localhost:5000/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -192,7 +132,7 @@ This formatted version ensures better readability while maintaining the legal st
                 if (!idToCheck) return;
 
                 const customerResponse = await axios.get(
-                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
+                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -328,7 +268,7 @@ This formatted version ensures better readability while maintaining the legal st
             };
 
             await axios.post(
-                `https://asc-cuhd.onrender.com/v1/agree/complete?_id=${localStorage.getItem("customerIdToCheck")}`,
+                `http://localhost:5000/v1/agree/complete?_id=${localStorage.getItem("customerIdToCheck")}`,
                 contentPayload,
                 {
                     headers: {
@@ -349,7 +289,7 @@ This formatted version ensures better readability while maintaining the legal st
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "https://asc-cuhd.onrender.com/v1/ai/gain",
+                "http://localhost:5000/v1/ai/gain",
                 {
                     title: agreements.title,
                     content: contentData,
@@ -406,8 +346,8 @@ This formatted version ensures better readability while maintaining the legal st
 
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
-                    <p>Name: {customer?.userId?.name}</p>
-                    <p>Email: {customer?.userId?.email}</p>
+                    <p>Name: {name}</p>
+                    <p>Email: {email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
 

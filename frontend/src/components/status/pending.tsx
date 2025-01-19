@@ -43,7 +43,7 @@ const Pending = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.post(`https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`, {
+                const res = await axios.post(`http://localhost:5000/v1/agree/get-all-agreements`, {
                     status: "Ready"
                 }, {
                     headers: {
