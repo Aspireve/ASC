@@ -176,7 +176,7 @@ This formatted version ensures better readability while maintaining the legal st
                         },
                     }
                 );
-
+                console.log(customerResponse)
                 setCustomer(customerResponse.data);
             } catch (error) {
                 console.error("Error fetching organization or customer data:", error);
@@ -384,7 +384,7 @@ This formatted version ensures better readability while maintaining the legal st
 
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
-                    <p>Name: {customer?.userId?.name}</p>
+                    <p onClick={() => console.log(customer)}>Name: {customer?.userId?.name}</p>
                     <p>Email: {customer?.userId?.email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
