@@ -11,6 +11,7 @@ import RawTool from "@editorjs/raw";
 import { Loader2 } from "lucide-react";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
+import ButtonGradient from "../shared/ButtonGradient";
 
 interface Agreement {
     title: string;
@@ -345,8 +346,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
 
-                <div className="mb-6">
-                    <button
+                <div className="mb-6 flex flex-col items-center">
+                    <ButtonGradient isLoading={isLoading} handleClick={handleAISuggestion} />
+                    {/* <button
                         type="button"
                         onClick={handleAISuggestion}
                         disabled={isLoading}
@@ -383,13 +385,13 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                                 Get AI Suggestions
                             </>
                         )}
-                    </button>
+                    </button> */}
                     <div className={isLoading ? "hidden" : "block"}>
                         <p className="mt-4">
                             {aiResponse ? (
                                 <Markdown>{aiResponse}</Markdown>
                             ) : (
-                                "No AI suggestions available."
+                                ""
                             )}
                         </p>
                     </div>

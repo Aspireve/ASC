@@ -8,13 +8,10 @@ import ImageTool from "@editorjs/image";
 import Table from "@editorjs/table";
 import LinkTool from "@editorjs/link";
 import RawTool from "@editorjs/raw";
-import { Loader2 } from "lucide-react";
-import { set } from "date-fns";
-import markdownToTxt from "markdown-to-txt";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
 import { toast } from 'react-hot-toast'
-import AIButton from "../shared/ai-button";
+import ButtonGradient from "../shared/ButtonGradient";
 
 interface Agreement {
     title: string;
@@ -311,8 +308,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
 
-                <div className="mb-6">
-                    <AIButton isLoading={isLoading} handleClick={handleAISuggestion} />
+                <div className="mb-6 flex flex-col items-center">
+                    <ButtonGradient isLoading={isLoading} handleClick={handleAISuggestion} />
+                    {/* <AIButton isLoading={isLoading} handleClick={handleAISuggestion} /> */}
                     {/* <button
                         type="button"
                         onClick={handleAISuggestion}
@@ -366,7 +364,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                                 {aiResponse ? (
                                     <Markdown>{aiResponse}</Markdown>
                                 ) : (
-                                    "No AI suggestions available."
+                                    ""
                                 )}
                             </p>
                         )}
