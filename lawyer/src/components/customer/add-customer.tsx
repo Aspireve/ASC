@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { ArrowBigRight, ArrowRight } from 'lucide-react';
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowBigRight, ArrowRight } from 'lucide-react';
 import * as z from 'zod'
 import {
     Form,
@@ -30,21 +30,18 @@ const formSchema = z.object({
     email: z.string().email({
         message: "Please enter a valid email address.",
     }),
-    // phone: z.string().regex(/^\d{10}$/, {
-    //     message: "Please enter a valid 10-digit phone number.",
-    // }),
 })
 
-const AddCustomer = () => {
+const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             fullname: "",
             email: "",
-            // phone: "",
         },
     })
 
+    const [open, setOpen] = useState(false); // To control the dialog state
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken ? userToken.accessToken : null;
 
@@ -57,27 +54,31 @@ const AddCustomer = () => {
                 }
             })
             console.log("Customer added successfully")
+            setOpen(false); // Close the dialog upon success
+            window.location.reload(); // Reload the page to reflect the changes
+            refreshTable(); // Call the refreshTable function to refresh the table
         } catch (error) {
             console.log("Error adding customer", error)
         }
     }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    <div className='group relative cursor-pointer p-2 w-32 border bg-white rounded-full overflow-hidden text-black text-center font-semibold'>
+                <button className='bg-white '>
+                    <div className='group relative cursor-pointer p-2 w-36 border bg-white rounded-full overflow-hidden text-black text-center font-semibold'>
                         <span className='translate-y-0 group-hover:-translate-y-12 group-hover:opacity-0 transition-all duration-300 inline-block'>
-                            Our Work
+                            Add Customer
                         </span>
-                        <div className='flex gap-2 text-white bg-green-400 z-10 items-center absolute left-0 top-0 h-full w-full justify-center translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 rounded-full group-hover:rounded-none '>
-                            <span>Our Work</span>
+                        <div className='flex gap-2 text-white bg-green-800 z-10 items-center absolute left-0 top-0 h-full w-full justify-center translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 rounded-full group-hover:rounded-none '>
+                            <span>Add Customer</span>
                         </div>
                     </div>
-                </Button>
+                </button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='font-dm-sans'>
                 <DialogHeader>
-                    <DialogTitle>Add New Customer</DialogTitle>
+                    <DialogTitle className='font-dm-sans'>Add New Customer</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -107,20 +108,10 @@ const AddCustomer = () => {
                                 </FormItem>
                             )}
                         />
-                        {/* <FormField
-                            control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Phone</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="1234567890" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        /> */}
-                        <Button type="submit">Add Customer</Button>
+
+                        <button className='group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-gradient-to-r dark:from-green-500 dark:to-green-700 from-green-300 to-green-500 dark:border-[rgb(76_100_255)] border-2 border-[#263381] bg-transparent px-6 font-medium dark:text-white text-black transition-all duration-100 [box-shadow:5px_5px_rgb(38_51_129)] dark:[box-shadow:5px_5px_rgb(76_100_255)] hover:translate-x-[3px] hover:translate-y-[3px] hover:[box-shadow:0px_0px_rgb(38_51_129)] dark:hover:[box-shadow:0px_0px_rgb(76_100_255)]'>
+                            Add Customer
+                        </button>
                     </form>
                 </Form>
             </DialogContent>

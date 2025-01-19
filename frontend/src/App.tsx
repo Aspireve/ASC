@@ -9,6 +9,7 @@ import CompanyProfile from "./pages/profile";
 import FollowupTabs from "./components/follow-up/followup-tabs";
 import ContactPage from "./pages/landing";
 import ProposedTabs from "./components/proposed/proposed-tab";
+import LawyerTabs from "./components/lawyer-dash/proposed-tab";
 
 function App() {
 
@@ -49,6 +50,10 @@ function App() {
           <Route
             path="/proposed"
             element={<MainLayout children={<ProposedTabs />} />}
+          />
+          <Route
+            path="/lawyer-dashboard"
+            element={<MainLayout children={<LawyerTabs />} />}
           />
         </Routes>
       </BrowserRouter>

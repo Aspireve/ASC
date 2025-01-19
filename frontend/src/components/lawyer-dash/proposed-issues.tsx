@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
     ColumnFiltersState,
@@ -27,43 +26,38 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { CustomerColumn, columns } from "./customer-column";
 import { ChevronDown } from "lucide-react";
-import AddCustomer from "./add-customer";
+import { ProposedColumn, columns } from "./proposed-column";
 import axios from "axios";
-import { useFetchUser } from "@/hook/useFetchUser";
 
-const CustomerList = () => {
+const ProposedIssues = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-    const [data, setData] = React.useState<CustomerColumn[]>([]);
+    const [data, setData] = React.useState<ProposedColumn[]>([]);
 
-    const { user } = useFetchUser();
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken ? userToken.accessToken : null;
 
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(
-                    `http://localhost:5000/v1/agree/customer?companyId=${user?.company[0]}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
+                const res = await axios.post(`http://localhost:5000/v1/agree/get-all-agreements`, {
+                    status: "Issue"
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
                     }
-                );
-                console.log(res.data);
-                const userIds = res.data.map((item: any) => item.userId);
-                setData(userIds);
+                })
+                console.log(res.data)
+                setData(res.data)
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
-        };
-        fetchData();
-    }, [user?._id]);
+        }
+        fetchData()
+    }, [])
 
     const table = useReactTable({
         data,
@@ -86,22 +80,18 @@ const CustomerList = () => {
 
     return (
         <div className="w-full">
-            {/* Filter Input and Add Customer Button */}
             <div className="flex items-center justify-between py-4 px-6">
                 <div className="flex-1">
                     <Input
-                        placeholder="Filter emails..."
-                        value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                        placeholder="Filter title..."
+                        value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table.getColumn("email")?.setFilterValue(event.target.value)
+                            table.getColumn("title")?.setFilterValue(event.target.value)
                         }
                         className="rounded-lg border-2 border-gray-300 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-3 w-full md:w-64"
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <AddCustomer refreshTable={function (): void {
-                        throw new Error("Function not implemented.");
-                    } } />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded-md px-4 py-2">
@@ -124,14 +114,12 @@ const CustomerList = () => {
                                         >
                                             {column.id}
                                         </DropdownMenuCheckboxItem>
-                                    );
+                                    )
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </div>
-
-            {/* Table */}
             <div className="rounded-lg border border-gray-200 shadow-lg overflow-hidden">
                 <Table>
                     <TableHeader className="bg-gray-100 text-gray-700">
@@ -156,7 +144,7 @@ const CustomerList = () => {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    className="border-t hover:bg-gray-50"
+                                    className="border-t"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id} className="px-4 py-3 text-sm">
@@ -181,8 +169,6 @@ const CustomerList = () => {
                     </TableBody>
                 </Table>
             </div>
-
-            {/* Pagination */}
             <div className="flex items-center justify-end space-x-2 py-4 px-6">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -210,7 +196,7 @@ const CustomerList = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default CustomerList;
+export default ProposedIssues;

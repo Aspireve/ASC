@@ -15,7 +15,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import CreateAgreement from "../agreements/proposed";
+import CreateAgreement from "../agreements/draft";
 
 interface Revision {
     _id: string;
@@ -50,6 +50,9 @@ export const columns: ColumnDef<ProposedColumn>[] = [
         cell: ({ row }) => {
             const agreementId = row.original._id;
             if (!agreementId) return null;
+            const handleLocal = () => {
+                localStorage.setItem('customerIdToCheck', row.original._id);
+            }
 
             return (
                 <div className="flex items-center gap-2">
@@ -98,6 +101,7 @@ export const columns: ColumnDef<ProposedColumn>[] = [
                                         variant="ghost"
                                         size="icon"
                                         className="hover:bg-primary/5 transition-colors"
+                                        onClick={handleLocal}
                                     >
                                         <ClipboardPlus className="h-4 w-4" />
                                     </Button>

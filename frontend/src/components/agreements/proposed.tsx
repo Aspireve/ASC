@@ -9,8 +9,6 @@ import Table from "@editorjs/table";
 import LinkTool from "@editorjs/link";
 import RawTool from "@editorjs/raw";
 import { Loader2 } from "lucide-react";
-import { set } from "date-fns";
-import markdownToTxt from "markdown-to-txt";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
 
@@ -24,36 +22,78 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         title: "",
         content: "",
     });
+    const [contentData, setContentData] = useState("Hello world");
     const [isLoading, setIsLoading] = useState(false);
-
-    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
-    const accessToken = userToken ? userToken.accessToken : null;
-
-    const editorRef = useRef<EditorJS | null>(null);
-    const isEditorInitialized = useRef(false);
-
     const [organization, setOrganization] = useState<any>({});
     const [customer, setCustomer] = useState<any>({});
     const [aiResponse, setAIResponse] = useState<string | null>(null);
+    const [agreements, setAgreements] = useState<any>({});  // Changed from array to object
+    const [changes, setChanges] = useState("");
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
+    const accessToken = userToken?.accessToken;
+    const editorRef = useRef<EditorJS | null>(null);
+    const isEditorInitialized = useRef(false);
+
+    async function handleAmend() {
+        if (!agreements._id) return;  // Add validation
+
+        try {
+            await axios.post(
+                `http://localhost:5000/v1/agree/add-terms?_id=${agreements._id}`,  // Fixed quote
+                { changes },  // Send changes as an object
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            // window.location.reload();
+        } catch (error) {
+            console.error("Error amending agreement:", error);
+        }
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const { name, value } = e.target;
+        if (name === "content") {
+            setContentData(value);
+        }
         setAgreement((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    const [lmaoNo, setLmaoNo] = useState(false);
     useEffect(() => {
-        console.log(agreement.content)
-        if (agreement && agreement.content && JSON.parse(agreement?.content)?.time === 1737245451442) {
-            setLmaoNo(true);
-        }
-    }, [agreement]);
+        const fetchData = async () => {
+            if (!accessToken) return;
+
+            try {
+                const res = await axios.post(
+                    `http://localhost:5000/v1/agree/get-all-agreements`,
+                    { status: "Draft" },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        }
+                    }
+                );
+                if (res.data?.[0]) {
+                    setAgreements(res.data[0]);  // Store single agreement object
+                }
+            } catch (error) {
+                console.error("Error fetching agreements:", error);
+            }
+        };
+        fetchData();
+    }, [accessToken]);
 
     useEffect(() => {
         const fetchOrganizationAndCustomerDetails = async () => {
+            if (!accessToken) return;
+
             try {
                 const organizationResponse = await axios.get(
                     `http://localhost:5000/v1/company/create`,
@@ -63,10 +103,11 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                         },
                     }
                 );
-                console.log(organizationResponse.data);
-
                 setOrganization(organizationResponse.data);
-                const idToCheck = localStorage.getItem("customerIdToCheck");
+
+                const idToCheck = customerId || localStorage.getItem("customerIdToCheck");  // Use customerId prop first
+                if (!idToCheck) return;
+
                 const customerResponse = await axios.get(
                     `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
                     {
@@ -75,8 +116,6 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                         },
                     }
                 );
-                console.log("Customer response:", customerResponse.data);
-
                 setCustomer(customerResponse.data);
             } catch (error) {
                 console.error("Error fetching organization or customer data:", error);
@@ -116,7 +155,6 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                                 inlineToolbar: true,
                             },
                             raw: RawTool,
-                            //   markdownParser: MDParser,
                             aiagent: {
                                 class: GeminiTool,
                                 config: {
@@ -176,10 +214,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         initEditor();
 
         return () => {
-            if (
-                editorRef.current &&
-                typeof editorRef.current.destroy === "function"
-            ) {
+            if (editorRef.current?.destroy) {
                 try {
                     editorRef.current.destroy();
                     editorRef.current = null;
@@ -189,12 +224,11 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 }
             }
         };
-    }, [agreement.content]);
+    }, [agreement.content, organization, customer]);
 
-    const handleSubmit = async (
-        e: React.FormEvent<HTMLFormElement>
-    ): Promise<void> => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
+        if (!accessToken) return;
 
         try {
             let finalContent = agreement.content;
@@ -205,12 +239,12 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             }
 
             const contentPayload = {
-                title: agreement.title,
-                content: finalContent,
+                title: agreements.title,
+                content: contentData,
                 customer: customerId,
             };
 
-            const response = await axios.post(
+            await axios.patch(
                 "http://localhost:5000/v1/agree/agreement",
                 contentPayload,
                 {
@@ -219,12 +253,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     },
                 }
             );
-            console.log("Content submitted successfully:", response.data);
 
-            // setAgreement({ title: "", content: "" });
-            // if (editorRef.current && typeof editorRef.current.clear === "function") {
-            //     editorRef.current.clear();
-            // }
             window.location.reload();
         } catch (error) {
             console.error("Error submitting content:", error);
@@ -232,6 +261,8 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
     };
 
     const handleAISuggestion = async () => {
+        if (!accessToken) return;
+
         setIsLoading(true);
         try {
             const response = await axios.post(
@@ -247,13 +278,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     },
                 }
             );
-            console.log("AI suggestions:", response.data.data);
 
-            if (response.data && response.data.data) {
-                // const updatedData = markdownToTxt(response.data.data);
+            if (response.data?.data) {
                 setAIResponse(response.data.data);
-            } else {
-                console.error("No data received from API.");
             }
         } catch (error) {
             console.error("Error getting AI suggestions:", error);
@@ -280,14 +307,13 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                             id="title"
                             name="title"
                             placeholder="Title"
-                            value={agreement.title}
+                            value={agreements.title}
                             onChange={handleChange}
                             required
                         />
                     </div>
                 </div>
 
-                {/* Display Organization Details */}
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Organization Details</h2>
                     <p>Name: {organization?.data?.[0]?.name}</p>
@@ -295,12 +321,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Contact: {organization?.data?.[0]?.contactDetails?.phone}</p>
                 </div>
 
-                {/* Display Customer Details */}
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
-                    <p onClick={() => console.log(customer)}>
-                        Name: {customer?.userId?.name}
-                    </p>
+                    <p>Name: {customer?.userId?.name}</p>
                     <p>Email: {customer?.userId?.email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
@@ -317,10 +340,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                             hover:from-purple-700 hover:to-indigo-700
                             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
                             transition-all duration-300 ease-in-out
-                            ${isLoading
-                                ? "bg-opacity-75 cursor-not-allowed"
-                                : "hover:shadow-lg"
-                            }
+                            ${isLoading ? "bg-opacity-75 cursor-not-allowed" : "hover:shadow-lg"}
                         `}
                     >
                         {isLoading ? (
@@ -347,51 +367,68 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                             </>
                         )}
                     </button>
-                    <div
-                        id="AI responses"
-                        style={{ display: isLoading ? "none" : "block" }}
+                    <div className={isLoading ? "hidden" : "block"}>
+                        <p className="mt-4">
+                            {aiResponse ? (
+                                <Markdown>{aiResponse}</Markdown>
+                            ) : (
+                                "No AI suggestions available."
+                            )}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label
+                        className="block text-sm font-medium text-gray-700"
+                        htmlFor="content"
                     >
-                        {isLoading ? (
-                            <p></p>
-                        ) : (
-                            // <pre>{aiResponse || "No AI suggestions available."}</pre>
-                            <p className="mt-4">
-                                {aiResponse ? (
-                                    <Markdown>{aiResponse}</Markdown>
-                                ) : (
-                                    "No AI suggestions available."
-                                )}
-                            </p>
-                        )}
+                        Content
+                    </label>
+                    <div>
+                        <textarea
+                            id="content"
+                            name="content"
+                            value={contentData}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-4"
+                            style={{ minHeight: "400px" }}
+                            required
+                        />
                     </div>
                 </div>
                 <div className="mb-4">
                     <label
                         className="block text-sm font-medium text-gray-700"
-                        htmlFor="content"
-                        onClick={() => console.log(agreement)}
+                        htmlFor="changes"
                     >
-                        Content
+                        Changes
                     </label>
-                    {lmaoNo ? (
-                        <Markdown>{JSON.parse(agreement?.content)?.blocks?.[0]?.data?.text}</Markdown>
-                    ) : (
-                        <div
-                            id="editorjs"
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-4"
-                            style={{ minHeight: "400px" }}
-                        />
-                    )}
+                    <input
+                        id="changes"
+                        value={changes}
+                        onChange={(e) => setChanges(e.target.value)}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
                 </div>
+                <button
+                    onClick={handleAmend}
+                    className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Amend Agreement
+                </button>
 
                 <button
                     type="submit"
                     className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Create Agreement
+                    Accept Agreement
                 </button>
+
             </form>
+
         </div>
+
     );
 };
 

@@ -15,7 +15,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import CreateAgreement from "../agreements/proposed";
+// import CustomerDetailSheet from "../customer/customer-detail-sheet";
+import CreateAgreement from "../agreements/create-agreement";
 
 interface Revision {
     _id: string;
@@ -25,7 +26,7 @@ interface Revision {
     revisedAt: string;
 }
 
-export interface ProposedColumn {
+export interface StatusColumn {
     customer: string[];
     _id: string;
     title: string;
@@ -43,7 +44,7 @@ export interface ProposedColumn {
     expiryDate: number;
 }
 
-export const columns: ColumnDef<ProposedColumn>[] = [
+export const columns: ColumnDef<StatusColumn>[] = [
     {
         accessorKey: 'action',
         header: 'Action',
@@ -166,15 +167,15 @@ export const columns: ColumnDef<ProposedColumn>[] = [
             );
         },
     },
-    // {
-    //     accessorKey: "expiryDate",
-    //     header: "Expiry Days",
-    //     cell: ({ row }) => (
-    //         <div className="text-sm">
-    //             {row.getValue("expiryDate")} days
-    //         </div>
-    //     ),
-    // },
+    {
+        accessorKey: "expiryDate",
+        header: "Expiry Days",
+        cell: ({ row }) => (
+            <div className="text-sm">
+                {row.getValue("expiryDate")} days
+            </div>
+        ),
+    },
     {
         accessorKey: "companyName",
         header: "Organization",
