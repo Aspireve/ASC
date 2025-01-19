@@ -56,7 +56,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
             setOpen(false); // Close the dialog upon success
             setTimeout(() => {
                 window.location.reload(); // Reload the page after 1 second
-            }, 2000); // Reload the page to reflect the changes
+            }, 1000); // Reload the page to reflect the changes
             refreshTable(); // Call the refreshTable function to refresh the table
         } catch (error) {
             console.log("Error adding customer", error)

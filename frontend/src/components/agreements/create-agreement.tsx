@@ -228,7 +228,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             setTimeout(() => {
                 window.location.reload(); // Reload the page after 1 second
-            }, 2000);
+            }, 1000);
         } catch (error) {
             console.error("Error submitting content:", error);
         }
