@@ -436,8 +436,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     />
                 </div>
                 <button
+                    type="button"
                     onClick={handleAmend}
-                    className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full py-2 mb-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     Amend Agreement
                 </button>
