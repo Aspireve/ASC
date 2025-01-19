@@ -71,6 +71,7 @@ export default function AddAgreementForm() {
                 })
             console.log(res)
             toast.success("Agreement added successfully")
+            form.reset()
         } catch (error) {
             console.log('Error adding agreement', error)
         }
@@ -154,12 +155,6 @@ export default function AddAgreementForm() {
                                             type="file"
                                             accept=".pdf"
                                             onChange={(e) => onChange(e.target.files)}
-                                        // onChange={(event) => {
-                                        //     const file = event.target.files?.[0];
-                                        //     if (file) {
-                                        //         onChange(file);
-                                        //     }
-                                        // }}
                                         />
                                     </FormControl>
                                     <FormMessage />

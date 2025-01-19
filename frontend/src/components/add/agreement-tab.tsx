@@ -2,10 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import AddAgreementForm from "./add-agreement-form";
+import AssesmentForm from "./assesment-form";
 
 const tabItems = [
     "Add Agreement",
-    "Assisment",
+    "Assesment",
 ];
 
 const AgreementTab = () => {
@@ -36,8 +37,8 @@ const AgreementTab = () => {
                     <TabsContent value="Add Agreement">
                         <AddAgreementForm />
                     </TabsContent>
-                    <TabsContent value="Assisment">
-                        {/* <Accepted /> */}
+                    <TabsContent value="Assesment">
+                        <AssesmentForm />
                     </TabsContent>
                 </Tabs>
             </CardContent>
