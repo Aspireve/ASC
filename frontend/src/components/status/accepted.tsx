@@ -30,6 +30,7 @@ import { ChevronDown } from "lucide-react";
 import { StatusColumn, columns } from "./status-column";
 import axios from "axios";
 
+
 const Accepted = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);

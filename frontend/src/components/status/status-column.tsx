@@ -1,54 +1,74 @@
-import { Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
-import { ColumnDef, Row } from "@tanstack/react-table";
-import { Sheet, ClipboardPlus } from "lucide-react";
-import CreateAgreement from "../agreements/create-agreement";
+import { ColumnDef } from "@tanstack/react-table";
+import { ClipboardPlus, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import CustomerDetailSheet from "../customer/customer-detail-sheet";
-import { Button } from "../ui/button";
-import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "../ui/sheet";
-import { CustomerColumn } from "../customer/customer-column";
+import CreateAgreement from "../agreements/create-agreement";
 
 interface Revision {
     _id: string;
     revisionNumber: number;
     changes: string;
     revisedBy: string;
-    revisedAt: string; // ISO date string
+    revisedAt: string;
 }
 
 export interface StatusColumn {
-    customer: string[]; // Array of customer IDs
-    _id: string; // Agreement ID
+    customer: string[];
+    _id: string;
     title: string;
     content: string;
-    createdBy: string; // ID of the creator
-    status: string; // Example: 'Accepted'
-    effectiveDate: string; // ISO date string
-    company: string; // ID of the company
-    agreementId: string; // Related agreement ID
+    createdBy: string;
+    status: string;
+    effectiveDate: string;
+    company: string;
+    agreementId: string;
     revisions: Revision[];
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
+    createdAt: string;
+    updatedAt: string;
     companyName: string;
     __v: number;
-    expiryDate: number; // Could represent a duration in days, weeks, etc.
+    expiryDate: number;
 }
-
 
 export const columns: ColumnDef<StatusColumn>[] = [
     {
         accessorKey: 'action',
         header: 'Action',
         cell: ({ row }) => {
-            const customerId = row.original._id;
-            if (!customerId) return <div>Error: Customer ID missing</div>;
-
-            const handleClick = () => {
-                localStorage.setItem('customerIdToCheck', customerId);
-            };
+            const agreementId = row.original._id;
+            if (!agreementId) return null;
 
             return (
-                <div className="flex items-center gap-2 font-dm-sans">
-                    <CustomerDetailSheet row={row as unknown as Row<CustomerColumn>} />
+                <div className="flex items-center gap-2">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-primary/5 transition-colors"
+                            >
+                                <Eye className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>View Agreement Details</p>
+                        </TooltipContent>
+                    </Tooltip>
+
                     <Sheet>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -57,7 +77,6 @@ export const columns: ColumnDef<StatusColumn>[] = [
                                         variant="ghost"
                                         size="icon"
                                         className="hover:bg-primary/5 transition-colors"
-                                        onClick={handleClick}
                                     >
                                         <ClipboardPlus className="h-4 w-4" />
                                     </Button>
@@ -74,40 +93,74 @@ export const columns: ColumnDef<StatusColumn>[] = [
                                     Create an agreement for <span className="font-medium text-foreground">{row.getValue("title")}</span>
                                 </SheetDescription>
                             </SheetHeader>
-                            <CreateAgreement customerId={customerId} />
+                            <CreateAgreement customerId={agreementId} />
                         </SheetContent>
                     </Sheet>
                 </div>
             );
         }
     },
+    {
+        accessorKey: "id",
+        header: "ID",
+        cell: ({ row }) => (
+            <div className="font-medium text-sm text-muted-foreground w-10">
+                #{String(row.index + 1).padStart(3, '0')}
+            </div>
+        ),
+    },
+    {
+        accessorKey: "title",
+        header: "Title",
+        cell: ({ row }) => (
+            <div className="flex flex-col">
+                <span className="font-medium text-sm">{row.getValue("title")}</span>
+                <span className="text-xs text-muted-foreground">
+                    ID: {row.original._id}
+                </span>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+            const status = (row.getValue("status") as string)?.toLowerCase() || 'pending';
+            const statusColors: Record<string, { bg: string; text: string }> = {
+                accepted: { bg: "bg-green-50", text: "text-green-700" },
+                pending: { bg: "bg-yellow-50", text: "text-yellow-700" },
+                rejected: { bg: "bg-red-50", text: "text-red-700" },
+                expired: { bg: "bg-gray-50", text: "text-gray-700" }
+            };
 
-    {
-        accessorKey: 'id',
-        header: 'ID',
-        cell: ({ row }) => (
-            <div>{row.index + 1}</div>
-        )
+            const { bg, text } = statusColors[status] || statusColors.pending;
+
+            return (
+                <Badge
+                    variant="secondary"
+                    className={`${bg} ${text} border-0 font-medium capitalize`}
+                >
+                    {status}
+                </Badge>
+            );
+        },
     },
     {
-        accessorKey: 'title',
-        header: 'Title',
+        accessorKey: "expiryDate",
+        header: "Expiry Days",
         cell: ({ row }) => (
-            <div>{row.getValue("title")}</div>
-        )
+            <div className="text-sm">
+                {row.getValue("expiryDate")} days
+            </div>
+        ),
     },
     {
-        accessorKey: 'expiryDate',
-        header: 'Expiry Day',
+        accessorKey: "companyName",
+        header: "Organization",
         cell: ({ row }) => (
-            <div>{row.getValue("expiryDate")}</div>
-        )
-    },
-    {
-        accessorKey: 'companyName',
-        header: 'Organization Name',
-        cell: ({ row }) => (
-            <div>{row.getValue("companyName")}</div>
-        )
+            <div className="text-sm font-medium">
+                {row.getValue("companyName")}
+            </div>
+        ),
     }
-]
+];
