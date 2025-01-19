@@ -123,13 +123,21 @@ const CustomerHistory = () => {
 };
 
 const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
+    // const customerDetails = [
+    //     { label: 'Customer ID', value: row.getValue('customer_id') },
+    //     { label: 'Name', value: row.getValue('name') },
+    //     { label: 'Email', value: row.getValue('email'), type: 'email' },
+    //     { label: 'Role', value: row.getValue('role') },
+    //     { label: 'Phone', value: row.getValue('phone') },
+    // ];
     const customerDetails = [
-        { label: 'Customer ID', value: row.getValue('customer_id') },
-        { label: 'Name', value: row.getValue('name') },
-        { label: 'Email', value: row.getValue('email'), type: 'email' },
-        { label: 'Role', value: row.getValue('role') },
-        { label: 'Phone', value: row.getValue('phone') },
+        { label: 'Customer ID', value: row.getValue('customer') }, // Adjust the field key
+        { label: 'Name', value: row.getValue('title') }, // Adjust the field key
+        { label: 'Email', value: '' }, // Fill in the appropriate field
+        { label: 'Role', value: '' }, // Fill in the appropriate field
+        { label: 'Phone', value: '' }, // Fill in the appropriate field
     ];
+
 
     const agreementDetails = [
         { label: 'Agreement Name', value: row.getValue('agreement_name') },

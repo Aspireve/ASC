@@ -1,4 +1,11 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { ColumnDef, Row } from "@tanstack/react-table";
+import { Sheet, ClipboardPlus } from "lucide-react";
+import CreateAgreement from "../agreements/create-agreement";
+import CustomerDetailSheet from "../customer/customer-detail-sheet";
+import { Button } from "../ui/button";
+import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "../ui/sheet";
+import { CustomerColumn } from "../customer/customer-column";
 
 interface Revision {
     _id: string;
@@ -31,10 +38,50 @@ export const columns: ColumnDef<StatusColumn>[] = [
     {
         accessorKey: 'action',
         header: 'Action',
-        cell: () => (
-            <div>Action</div>
-        )
+        cell: ({ row }) => {
+            const customerId = row.original._id;
+            if (!customerId) return <div>Error: Customer ID missing</div>;
+
+            const handleClick = () => {
+                localStorage.setItem('customerIdToCheck', customerId);
+            };
+
+            return (
+                <div className="flex items-center gap-2 font-dm-sans">
+                    <CustomerDetailSheet row={row as unknown as Row<CustomerColumn>} />
+                    <Sheet>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <SheetTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="hover:bg-primary/5 transition-colors"
+                                        onClick={handleClick}
+                                    >
+                                        <ClipboardPlus className="h-4 w-4" />
+                                    </Button>
+                                </SheetTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Create Agreement</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
+                            <SheetHeader>
+                                <SheetTitle className="text-xl font-semibold">New Agreement</SheetTitle>
+                                <SheetDescription>
+                                    Create an agreement for <span className="font-medium text-foreground">{row.getValue("title")}</span>
+                                </SheetDescription>
+                            </SheetHeader>
+                            <CreateAgreement customerId={customerId} />
+                        </SheetContent>
+                    </Sheet>
+                </div>
+            );
+        }
     },
+
     {
         accessorKey: 'id',
         header: 'ID',

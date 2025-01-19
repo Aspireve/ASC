@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
     ColumnFiltersState,
@@ -98,7 +99,9 @@ const CustomerList = () => {
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <AddCustomer />
+                    <AddCustomer refreshTable={function (): void {
+                        throw new Error("Function not implemented.");
+                    } } />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded-md px-4 py-2">

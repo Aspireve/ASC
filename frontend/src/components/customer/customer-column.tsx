@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ClipboardPlus, User2 } from "lucide-react";
+import { ClipboardPlus } from "lucide-react";
 import CustomerDetailSheet from "./customer-detail-sheet";
 import { Button } from "@/components/ui/button"
 import {
