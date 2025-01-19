@@ -177,19 +177,20 @@ exports.createAgreement = async (req, res) => {
 
     const u = await User.findById(createdBy);
 
+    const cust = await Customer.findOne({ userId: customer }).populate(
+      "userId creator"
+    );
     const agreement = new AgreementModal({
       title,
       content,
       createdBy,
-      customer,
+      customer: cust._id,
       status: "Draft",
       effectiveDate: new Date(),
       company: u.company[0],
     });
 
     await agreement.save();
-
-    const cust = await Customer.findById(customer).populate("userId creator");
 
     const passwordTemplate = welcome
       .replace("[Recipient Name]", cust.userId.name)
