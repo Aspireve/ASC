@@ -7,6 +7,7 @@ import Lawyers from "./components/lawyer/lawyers";
 import CustomerList from "./components/customer/customer-list";
 import CompanyProfile from "./pages/profile";
 import FollowupTabs from "./components/follow-up/followup-tabs";
+import ContactPage from "./pages/landing";
 
 function App() {
 
@@ -19,6 +20,10 @@ function App() {
           <Route
             path="/"
             element={<MainLayout children={<div>Home</div>} />}
+          />
+          <Route
+            path="/landing"
+            element={<ContactPage />}
           />
           <Route
             path="/status"
