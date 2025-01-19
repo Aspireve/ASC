@@ -43,7 +43,7 @@ const Priority = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/v1/notifications/notif`, {
+                const res = await axios.get(`https://asc-cuhd.onrender.com/v1/notifications/notif`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     }

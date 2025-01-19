@@ -64,7 +64,7 @@ const CompanyProfile: React.FC = () => {
         const fetchCompanyData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:5000/v1/company/create", {
+                const response = await axios.get("https://asc-cuhd.onrender.com/v1/company/create", {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -117,7 +117,7 @@ const CompanyProfile: React.FC = () => {
         console.log(company);
 
         try {
-            const response = await axios.patch("http://localhost:5000/v1//company/create", company, {
+            const response = await axios.patch("https://asc-cuhd.onrender.com/v1//company/create", company, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },

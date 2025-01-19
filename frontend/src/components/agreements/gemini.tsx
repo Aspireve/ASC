@@ -116,7 +116,7 @@ export class GeminiTool {
 
       return await axios
         .post(
-          `http://localhost:5000/v1/ai/gaio`,
+          `https://asc-cuhd.onrender.com/v1/ai/gaio`,
           {
             prompt,
             title: this.config?.agreement?.title,

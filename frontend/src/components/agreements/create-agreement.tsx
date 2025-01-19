@@ -8,13 +8,10 @@ import ImageTool from "@editorjs/image";
 import Table from "@editorjs/table";
 import LinkTool from "@editorjs/link";
 import RawTool from "@editorjs/raw";
-import { Loader2 } from "lucide-react";
-import { set } from "date-fns";
-import markdownToTxt from "markdown-to-txt";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
 import { toast } from 'react-hot-toast'
-import AIButton from "../shared/ai-button";
+import ButtonGradient from "../shared/ButtonGradient";
 
 interface Agreement {
     title: string;
@@ -58,7 +55,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         const fetchOrganizationAndCustomerDetails = async () => {
             try {
                 const organizationResponse = await axios.get(
-                    `http://localhost:5000/v1/company/create`,
+                    `https://asc-cuhd.onrender.com/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -70,7 +67,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 setOrganization(organizationResponse.data);
                 const idToCheck = localStorage.getItem("customerIdToCheck");
                 const customerResponse = await axios.get(
-                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -213,7 +210,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             };
 
             const response = await axios.post(
-                "http://localhost:5000/v1/agree/agreement",
+                "https://asc-cuhd.onrender.com/v1/agree/agreement",
                 contentPayload,
                 {
                     headers: {
@@ -231,7 +228,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             setTimeout(() => {
                 window.location.reload(); // Reload the page after 1 second
-            }, 2000);
+            }, 1000);
         } catch (error) {
             console.error("Error submitting content:", error);
         }
@@ -241,7 +238,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "http://localhost:5000/v1/ai/gaip",
+                "https://asc-cuhd.onrender.com/v1/ai/gaip",
                 {
                     title: agreement.title,
                     content: agreement.content,
@@ -311,8 +308,9 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
                 </div>
 
-                <div className="mb-6">
-                    <AIButton isLoading={isLoading} handleClick={handleAISuggestion} />
+                <div className="mb-6 flex flex-col items-center">
+                    <ButtonGradient isLoading={isLoading} handleClick={handleAISuggestion} />
+                    {/* <AIButton isLoading={isLoading} handleClick={handleAISuggestion} /> */}
                     {/* <button
                         type="button"
                         onClick={handleAISuggestion}
@@ -366,7 +364,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                                 {aiResponse ? (
                                     <Markdown>{aiResponse}</Markdown>
                                 ) : (
-                                    "No AI suggestions available."
+                                    ""
                                 )}
                             </p>
                         )}

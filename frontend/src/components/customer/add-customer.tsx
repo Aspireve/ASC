@@ -46,7 +46,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
         try {
-            await axios.post(`http://localhost:5000/v1/agree/customer`, values, {
+            await axios.post(`https://asc-cuhd.onrender.com/v1/agree/customer`, values, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 }
@@ -56,7 +56,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
             setOpen(false); // Close the dialog upon success
             setTimeout(() => {
                 window.location.reload(); // Reload the page after 1 second
-            }, 2000); // Reload the page to reflect the changes
+            }, 1000); // Reload the page to reflect the changes
             refreshTable(); // Call the refreshTable function to refresh the table
         } catch (error) {
             console.log("Error adding customer", error)
