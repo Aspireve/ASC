@@ -19,7 +19,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 interface UserProfile {
     name: string;
@@ -38,6 +38,8 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
     const toggleCollapse = () => {
         setIsCollapsed(!isCollapsed);
     };
+
+    const navigate = useNavigate()
 
     const getActiveClass = (path: string) => {
         return location.pathname === path ? 'bg-gary-500 text-black font-extrabold' : ''; // Active class for highlighting
@@ -125,11 +127,11 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                             </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[200px]">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/profile")}>
                                 <Settings className="mr-2 h-4 w-4" />
                                 <span>Profile</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/login")}>
                                 <LogOut className="mr-2 h-4 w-4" />
                                 <span>Sign out</span>
                             </DropdownMenuItem>

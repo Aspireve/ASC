@@ -24,7 +24,7 @@ import { UserRoundPlus } from 'lucide-react'
 import axios from 'axios'
 
 const formSchema = z.object({
-    fullname: z.string().min(2, {
+    name: z.string().min(2, {
         message: "Full name must be at least 2 characters.",
     }),
     email: z.string().email({
@@ -36,7 +36,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            fullname: "",
+            name: "",
             email: "",
         },
     })
@@ -84,7 +84,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="fullname"
+                            name="name"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Full Name</FormLabel>

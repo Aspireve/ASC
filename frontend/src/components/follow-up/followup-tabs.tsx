@@ -8,7 +8,7 @@ const tabItems = ["Upcoming", "Priority"];
 
 const FollowupTabs = () => {
     return (
-        <Card>
+        <Card className="mr-10">
             <CardContent className="pt-4">
                 <Tabs defaultValue="Upcoming" className="w-full">
                     {/* TabsList with background, padding, and rounded corners */}

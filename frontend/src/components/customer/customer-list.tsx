@@ -85,9 +85,9 @@ const CustomerList = () => {
     });
 
     return (
-        <div className="w-full">
+        <div className="w-full pr-10">
             {/* Filter Input and Add Customer Button */}
-            <div className="flex items-center justify-between py-4 px-6">
+            <div className="flex items-center justify-between py-4 ">
                 <div className="flex-1">
                     <Input
                         placeholder="Filter emails..."
@@ -159,7 +159,7 @@ const CustomerList = () => {
                                     className="border-t hover:bg-gray-50"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} className="px-4 py-3 text-sm">
+                                        <TableCell key={cell.id} onClick={() => console.log(cell)} className="px-4 py-3 text-sm">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
