@@ -87,8 +87,8 @@ const Priority = () => {
     });
 
     return (
-        <div className="w-full">
-            <div className="flex items-center justify-between py-4 px-6">
+        <div className="w-full ">
+            <div className="flex items-center justify-between py-4">
                 {/* Updated Filter Input */}
                 <div className="flex-1">
                     <Input

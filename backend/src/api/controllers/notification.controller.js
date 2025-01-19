@@ -22,7 +22,7 @@ exports.getNotifications = async (req, res, next) => {
       userId,
       read: false,
       dateToDisplay: { $gte: new Date(), $lte: oneMonthAhead },
-    }).populate("agreement");
+    }).populate("agreement userId");
 
     // Optionally group by the warning periods
     const groupedNotifications = {
