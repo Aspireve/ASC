@@ -290,14 +290,14 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 </div>
 
                 {/* Display Customer Details */}
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
                     <p onClick={() => console.log(customer)}>
                         Name: {customer?.userId?.name}
                     </p>
                     <p>Email: {customer?.userId?.email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
-                </div>
+                </div> */}
 
                 <div className="mb-6 flex flex-col items-center">
                     <ButtonGradient isLoading={isLoading} handleClick={handleAISuggestion} />

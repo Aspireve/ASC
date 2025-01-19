@@ -344,12 +344,12 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Contact: {organization?.data?.[0]?.contactDetails?.phone}</p>
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
                     <p>Name: {name}</p>
                     <p>Email: {email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
-                </div>
+                </div> */}
 
                 <div className="mb-6 flex flex-col items-center">
                     <ButtonGradient isLoading={isLoading} handleClick={handleAISuggestion} />
