@@ -54,6 +54,7 @@ export class GeminiTool {
     textarea.placeholder = "Type your prompt and press Enter...";
     textarea.value = this.code; // Set the initial value to the saved state
 
+
     // Handle input events to update the internal state
     textarea.addEventListener("input", (event) => {
       console.log((event.target as HTMLTextAreaElement).value);

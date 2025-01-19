@@ -93,13 +93,10 @@ exports.geminiPromptsOriginal = async (req, res, next) => {
 
     const { type, title, prompt, orgdetails, customerDetails } = req.body;
 
-    const promptA = `${prompt} use these as context: ${
-      type && JSON.stringify(type)
-    } ${title && JSON.stringify(title)} ${
-      orgdetails && JSON.stringify(orgdetails)
-    } ${
-      customerDetails && JSON.stringify(customerDetails)
-    }, remember to be proper and nice and dont break any rules
+    const promptA = `${prompt} use these as context: ${type && JSON.stringify(type)
+      } ${title && JSON.stringify(title)} ${orgdetails && JSON.stringify(orgdetails)
+      } ${customerDetails && JSON.stringify(customerDetails)
+      }, remember to be proper and nice and dont break any rules
     
     Provide the entire agreement with the details, use today as the date, take the address from the contactDetails.name and other data: remember not to use any other data you dont know`;
 
@@ -111,3 +108,41 @@ exports.geminiPromptsOriginal = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.geminiPromptNew = async (req, res, next) => {
+  try {
+    const genAI = new GoogleGenerativeAI(GEMMINI);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const { type, title, content } = req.body;
+
+    const prompt = `
+   Analyze the provided agreement using the following structure:
+
+Title: ${title}
+Content: ${content}
+Organization Type: ${type}
+
+Please provide:
+
+A concise 1-2 sentence summary (max 75 words) highlighting potential contractual issues, risks, or concerning clauses
+Focus on:
+
+Hidden obligations or commitments
+Unclear or ambiguous terms
+Unfavorable conditions
+Misaligned responsibilities
+Termination complexities
+Legal compliance concerns based on organization type
+
+
+
+Format your response as a brief bullet point identifying the primary concern and its potential impact.`;
+    const response = await model.generateContent(`${prompt}`);
+    return res.status(200).json({ data: await response.response.text() });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+

@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
             console.log(response);
             localStorage.setItem("usertoken", JSON.stringify((await response).data.token));
             localStorage.setItem("userData", JSON.stringify((await response).data.user));
-            window.location.href = "/";
+            window.location.href = "/customers";
 
         } catch (error) {
             console.error("Error logging in:", error);
