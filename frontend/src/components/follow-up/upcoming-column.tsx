@@ -27,13 +27,13 @@ export type UpcomingColumn = {
 }
 
 export const columns: ColumnDef<UpcomingColumn>[] = [
-    {
-        accessorKey: 'action',
-        header: 'Action',
-        cell: () => (
-            <div>Action</div>
-        )
-    },
+    // {
+    //     accessorKey: 'action',
+    //     header: 'Action',
+    //     cell: () => (
+    //         <div>Action</div>
+    //     )
+    // },
     {
         accessorKey: 'id',
         header: 'ID',
@@ -55,12 +55,12 @@ export const columns: ColumnDef<UpcomingColumn>[] = [
             <div>{row.getValue("expiryDate")}</div>
         )
     },
-    {
-        accessorKey: 'companyName',
-        header: 'Organization Name',
-        cell: ({ row }) => (
-            <div>{row.getValue("companyName")}</div>
-        )
-    }
+    // {
+    //     accessorKey: 'companyName',
+    //     header: 'Organization Name',
+    //     cell: ({ row }) => (
+    //         <div>{row.getValue("companyName")}</div>
+    //     )
+    // }
 
 ]

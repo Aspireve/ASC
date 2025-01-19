@@ -150,7 +150,7 @@ const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
                             size="icon"
                             className="hover:bg-primary/5 transition-colors"
                         >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4 text-[#1d4ed8]" />
                         </Button>
                     </SheetTrigger>
                 </TooltipTrigger>

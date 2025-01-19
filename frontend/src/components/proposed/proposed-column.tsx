@@ -62,7 +62,7 @@ export const columns: ColumnDef<ProposedColumn>[] = [
                                         size="icon"
                                         className="hover:bg-primary/5 transition-colors"
                                     >
-                                        <Eye className="h-4 w-4" />
+                                        <Eye className="h-4 w-4 text-[#1d4ed8]" />
                                     </Button>
                                 </SheetTrigger>
                             </TooltipTrigger>
@@ -99,7 +99,7 @@ export const columns: ColumnDef<ProposedColumn>[] = [
                                         size="icon"
                                         className="hover:bg-primary/5 transition-colors"
                                     >
-                                        <ClipboardPlus className="h-4 w-4" />
+                                        <ClipboardPlus className="h-4 w-4 text-[#50bd6b]" />
                                     </Button>
                                 </SheetTrigger>
                             </TooltipTrigger>

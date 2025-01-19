@@ -3,6 +3,7 @@ import { useState } from "react";
 import BackgroundVd from "../assets/Background Vid.mp4";
 import axios from "axios";
 import * as moment from "moment-timezone"; // Import moment-timezone
+import { toast } from 'react-hot-toast';
 
 interface SignupFormValues {
     name: string;
@@ -44,6 +45,8 @@ const SignupPage: React.FC = () => {
         try {
             await axios.post("http://localhost:5000/v1/auth/register", formValues);
             console.log("User signed up successfully");
+            toast.success("User signed up successfully");
+            window.location.href = "/login";
         }
         catch (error) {
             console.error("Error signing up:", error);
