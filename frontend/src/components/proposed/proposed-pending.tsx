@@ -36,26 +36,50 @@ const ProposedPending = () => {
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
     const [data, setData] = React.useState<ProposedColumn[]>([]);
+    const [agreements, setAgreements] = React.useState<ProposedColumn | null>(null);
 
     const userToken = JSON.parse(localStorage.getItem("usertoken") || "{}");
     const accessToken = userToken ? userToken.accessToken : null;
 
     React.useEffect(() => {
         const fetchData = async () => {
+            if (!accessToken) return;
+
             try {
-                const res = await axios.post(`http://localhost:5000/v1/agree/get-all-agreements`, {
-                    status: "Ready"
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
+                const res = await axios.post(
+                    `http://localhost:5000/v1/agree/get-all-agreements`,
+                    { status: "Ready" },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
                     }
-                })
-                console.log(res.data)
-                setData(res.data)
+                );
+                setData(res.data);
+
+                // Fetch the agreementId from localStorage
+                const agreementId = localStorage.getItem("customerIdToCheck");
+
+                if (res.data && agreementId) {
+                    // Find the agreement with the matching _id
+                    const matchingAgreement = res.data.find((item: { _id: string; }) => item._id === agreementId);
+
+                    if (matchingAgreement) {
+                        // Set the matching agreement in state
+                        setAgreements(matchingAgreement);
+                        console.log("Matching Agreement:", matchingAgreement);
+                    } else {
+                        console.warn("No matching agreement found for the given ID.");
+                    }
+                } else if (res.data?.[0]) {
+                    // Fallback: Set the first agreement if no agreementId is in localStorage
+                    setAgreements(res.data[0]);
+                    console.log("Default Agreement:", res.data[0]);
+                }
             } catch (error) {
-                console.log(error)
+                console.error("Error fetching agreements:", error);
             }
-        }
+        };
         fetchData()
     }, [])
 

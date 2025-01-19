@@ -266,7 +266,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             const response = await axios.post(
                 "http://localhost:5000/v1/ai/gaip",
                 {
-                    title: agreement.title,
+                    title: agreements.title,
                     content: agreement.content,
                     organizationType: organization.type,
                 },
