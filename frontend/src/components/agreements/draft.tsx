@@ -103,7 +103,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                         },
                     }
                 );
-
+                console.log(customerResponse)
                 setCustomer(customerResponse.data);
                 setContentData(customerResponse.data.content);
             } catch (error) {
@@ -204,8 +204,14 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
                 <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
+<<<<<<< HEAD
                     <p>Name: {name}</p>
                     <p>Email: {email}</p>
+=======
+                    <p onClick={() => console.log(customer)}>Name: {customer?.userId?.name}</p>
+                    <p>Email: {customer?.userId?.email}</p>
+                    <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
+>>>>>>> 2bf55614236d71b0d4a8676fbc4b732e4bc82272
                 </div>
 
                 <div className="mb-6">

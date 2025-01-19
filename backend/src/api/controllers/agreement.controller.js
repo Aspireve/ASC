@@ -144,6 +144,8 @@ exports.createCustomerCombo = async (req, res, next) => {
     const user = await new User({ email, name }).save();
     const customerCompany = await Company.findById(user.company[0]);
 
+    console.log(creator, creatorCompany, customerCompany, user)
+
     if (!creator || !creatorCompany || !customerCompany || !user) {
       return res.status(400).json({
         message: "Invalid creator, creator company, customer company, or user",
