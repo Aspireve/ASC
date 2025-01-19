@@ -102,7 +102,7 @@ const CustomerHistory = () => {
                                 : 'text-blue-500 fill-blue-500/10'
                                 }`}
                         />
-                        <div className="space-y-1">
+                        <div className="space-y-1 ml-7">
                             <div className="flex items-center justify-between">
                                 <p className="text-sm font-medium">
                                     {item.action}
