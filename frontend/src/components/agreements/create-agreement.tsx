@@ -14,6 +14,7 @@ import markdownToTxt from "markdown-to-txt";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
 import { toast } from 'react-hot-toast'
+import AIButton from "../shared/ai-button";
 
 interface Agreement {
     title: string;
@@ -311,7 +312,8 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 </div>
 
                 <div className="mb-6">
-                    <button
+                    <AIButton isLoading={isLoading} handleClick={handleAISuggestion} />
+                    {/* <button
                         type="button"
                         onClick={handleAISuggestion}
                         disabled={isLoading}
@@ -351,7 +353,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                                 Get AI Suggestions
                             </>
                         )}
-                    </button>
+                    </button> */}
                     <div
                         id="AI responses"
                         style={{ display: isLoading ? "none" : "block" }}

@@ -11,6 +11,7 @@ import ContactPage from "./pages/landing";
 import Home from "./app/page";
 import ProposedTabs from "./components/proposed/proposed-tab";
 import LawyerTabs from "./components/lawyer-dash/proposed-tab";
+import AgreementTab from "./components/add/agreement-tab";
 
 function App() {
 
@@ -55,6 +56,10 @@ function App() {
           <Route
             path="/lawyer-dashboard"
             element={<MainLayout children={<LawyerTabs />} />}
+          />
+          <Route
+            path="/add-agreements"
+            element={<MainLayout children={<AgreementTab />} />}
           />
         </Routes>
       </BrowserRouter>

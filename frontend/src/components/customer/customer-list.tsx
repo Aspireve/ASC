@@ -32,6 +32,7 @@ import { ChevronDown } from "lucide-react";
 import AddCustomer from "./add-customer";
 import axios from "axios";
 import { useFetchUser } from "@/hook/useFetchUser";
+import { Link } from "react-router-dom";
 
 const CustomerList = () => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -99,9 +100,12 @@ const CustomerList = () => {
                     />
                 </div>
                 <div className="flex items-center gap-2">
+                    <Link to="/add-agreements">
+                        <Button variant='outline'>Add Agreement</Button>
+                    </Link>
                     <AddCustomer refreshTable={function (): void {
                         throw new Error("Function not implemented.");
-                    } } />
+                    }} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded-md px-4 py-2">
