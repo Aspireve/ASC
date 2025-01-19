@@ -1,22 +1,22 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ClipboardPlus, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+// import { ClipboardPlus, Eye } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import {
+//     Sheet,
+//     SheetContent,
+//     SheetDescription,
+//     SheetHeader,
+//     SheetTitle,
+//     SheetTrigger,
+// } from "@/components/ui/sheet";
+// import {
+//     Tooltip,
+//     TooltipContent,
+//     TooltipTrigger,
+// } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import CustomerDetailSheet from "../customer/customer-detail-sheet";
-import CreateAgreement from "../agreements/create-agreement";
+// import CustomerDetailSheet from "../customer/customer-detail-sheet";
+// import CreateAgreement from "../agreements/create-agreement";
 
 interface Revision {
     _id: string;
@@ -45,83 +45,83 @@ export interface StatusColumn {
 }
 
 export const columns: ColumnDef<StatusColumn>[] = [
-    {
-        accessorKey: 'action',
-        header: 'Action',
-        cell: ({ row }) => {
-            const agreementId = row.original._id;
-            if (!agreementId) return null;
+    // {
+    //     accessorKey: 'action',
+    //     header: 'Action',
+    //     cell: ({ row }) => {
+    //         const agreementId = row.original._id;
+    //         if (!agreementId) return null;
 
-            return (
-                <div className="flex items-center gap-2">
-                    <Sheet>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <SheetTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="hover:bg-primary/5 transition-colors"
-                                    >
-                                        <Eye className="h-4 w-4 text-[#1d4ed8]" />
-                                    </Button>
-                                </SheetTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>View agreement details</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
-                            <SheetHeader>
-                                <SheetTitle className="text-xl font-semibold">Agreement</SheetTitle>
-                                <SheetDescription>
-                                    See the details of agreement
-                                </SheetDescription>
-                            </SheetHeader>
-                            <div className="mt-5">
-                                <div>
-                                    <span className="font-semibold">Title : </span>
-                                    <span>{row.getValue("title")}</span>
-                                </div>
-                                <div>
-                                    <span className="font-semibold">Content : </span>
-                                    <span>{row.getValue("content")}</span>
-                                </div>
-                            </div>
-                        </SheetContent>
-                    </Sheet>
+    //         return (
+    //             <div className="flex items-center gap-2">
+    //                 <Sheet>
+    //                     <Tooltip>
+    //                         <TooltipTrigger asChild>
+    //                             <SheetTrigger asChild>
+    //                                 <Button
+    //                                     variant="ghost"
+    //                                     size="icon"
+    //                                     className="hover:bg-primary/5 transition-colors"
+    //                                 >
+    //                                     <Eye className="h-4 w-4 text-[#1d4ed8]" />
+    //                                 </Button>
+    //                             </SheetTrigger>
+    //                         </TooltipTrigger>
+    //                         <TooltipContent>
+    //                             <p>View agreement details</p>
+    //                         </TooltipContent>
+    //                     </Tooltip>
+    //                     <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
+    //                         <SheetHeader>
+    //                             <SheetTitle className="text-xl font-semibold">Agreement</SheetTitle>
+    //                             <SheetDescription>
+    //                                 See the details of agreement
+    //                             </SheetDescription>
+    //                         </SheetHeader>
+    //                         <div className="mt-5">
+    //                             <div>
+    //                                 <span className="font-semibold">Title : </span>
+    //                                 <span>{row.getValue("title")}</span>
+    //                             </div>
+    //                             <div>
+    //                                 <span className="font-semibold">Content : </span>
+    //                                 <span>{row.getValue("content")}</span>
+    //                             </div>
+    //                         </div>
+    //                     </SheetContent>
+    //                 </Sheet>
 
-                    <Sheet>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <SheetTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="hover:bg-primary/5 transition-colors"
-                                    >
-                                        <ClipboardPlus className="h-4 w-4 text-[#50bd6b]" />
-                                    </Button>
-                                </SheetTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Create Agreement</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
-                            <SheetHeader>
-                                <SheetTitle className="text-xl font-semibold">New Agreement</SheetTitle>
-                                <SheetDescription>
-                                    Create an agreement for <span className="font-medium text-foreground">{row.getValue("title")}</span>
-                                </SheetDescription>
-                            </SheetHeader>
-                            <CreateAgreement customerId={agreementId} />
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            );
-        }
-    },
+    //                 <Sheet>
+    //                     <Tooltip>
+    //                         <TooltipTrigger asChild>
+    //                             <SheetTrigger asChild>
+    //                                 <Button
+    //                                     variant="ghost"
+    //                                     size="icon"
+    //                                     className="hover:bg-primary/5 transition-colors"
+    //                                 >
+    //                                     <ClipboardPlus className="h-4 w-4 text-[#50bd6b]" />
+    //                                 </Button>
+    //                             </SheetTrigger>
+    //                         </TooltipTrigger>
+    //                         <TooltipContent>
+    //                             <p>Create Agreement</p>
+    //                         </TooltipContent>
+    //                     </Tooltip>
+    //                     <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
+    //                         <SheetHeader>
+    //                             <SheetTitle className="text-xl font-semibold">New Agreement</SheetTitle>
+    //                             <SheetDescription>
+    //                                 Create an agreement for <span className="font-medium text-foreground">{row.getValue("title")}</span>
+    //                             </SheetDescription>
+    //                         </SheetHeader>
+    //                         <CreateAgreement customerId={agreementId} />
+    //                     </SheetContent>
+    //                 </Sheet>
+    //             </div>
+    //         );
+    //     }
+    // },
     {
         accessorKey: "id",
         header: "ID",
@@ -176,15 +176,15 @@ export const columns: ColumnDef<StatusColumn>[] = [
             </div>
         ),
     },
-    {
-        accessorKey: "companyName",
-        header: "Organization",
-        cell: ({ row }) => (
-            <div className="text-sm font-medium">
-                {row.getValue("companyName")}
-            </div>
-        ),
-    },
+    // {
+    //     accessorKey: "companyName",
+    //     header: "Organization",
+    //     cell: ({ row }) => (
+    //         <div className="text-sm font-medium">
+    //             {row.getValue("companyName")}
+    //         </div>
+    //     ),
+    // },
     {
         accessorKey: 'content',
         header: () => <div></div>,

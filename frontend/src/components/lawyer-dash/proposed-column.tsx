@@ -179,15 +179,15 @@ export const columns: ColumnDef<ProposedColumn>[] = [
     //         </div>
     //     ),
     // },
-    {
-        accessorKey: "companyName",
-        header: "Organization",
-        cell: ({ row }) => (
-            <div className="text-sm font-medium">
-                {row.getValue("companyName")}
-            </div>
-        ),
-    },
+    // {
+    //     accessorKey: "companyName",
+    //     header: "Organization",
+    //     cell: ({ row }) => (
+    //         <div className="text-sm font-medium">
+    //             {row.getValue("companyName")}
+    //         </div>
+    //     ),
+    // },
     {
         accessorKey: 'content',
         header: () => <div></div>,

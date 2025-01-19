@@ -202,14 +202,14 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                     <p>Contact: {organization?.data?.[0]?.contactDetails?.phone}</p>
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <h2 className="font-semibold text-lg">Customer Details</h2>
                     <p>Name: {name}</p>
                     <p>Email: {email}</p>
                     <p onClick={() => console.log(customer)}>Name: {customer?.userId?.name}</p>
                     <p>Email: {customer?.userId?.email}</p>
                     <p>Phone: {customer?.userId?.phone || "+91 9327774534"}</p>
-                </div>
+                </div> */}
 
                 <div className="mb-6">
                     <button
