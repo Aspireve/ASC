@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ArrowBigRight, ArrowRight } from 'lucide-react';
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -18,10 +17,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { UserRoundPlus } from 'lucide-react'
 import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 const formSchema = z.object({
     name: z.string().min(2, {
@@ -54,8 +52,11 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
                 }
             })
             console.log("Customer added successfully")
+            toast.success("Customer added successfully")
             setOpen(false); // Close the dialog upon success
-            window.location.reload(); // Reload the page to reflect the changes
+            setTimeout(() => {
+                window.location.reload(); // Reload the page after 1 second
+            }, 2000); // Reload the page to reflect the changes
             refreshTable(); // Call the refreshTable function to refresh the table
         } catch (error) {
             console.log("Error adding customer", error)

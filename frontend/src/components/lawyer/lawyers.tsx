@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table"
 import axios from 'axios'
 import { useFetchUser } from '@/hook/useFetchUser'
+import { toast } from 'react-hot-toast'
 
 // Define the schema for the lawyer form
 const formSchema = z.object({
@@ -79,6 +80,7 @@ const Lawyers: React.FC = () => {
             });
 
             console.log("Lawyer added successfully")
+            toast.success("Lawyer added successfully")
         } catch (error) {
             console.error("Error adding lawyer:", error)
 

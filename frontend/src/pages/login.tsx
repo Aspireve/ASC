@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import BackgroundVd from "../assets/Background Vid.mp4";
 import axios from "axios";
+import { toast } from 'react-hot-toast';
 
 const LoginPage: React.FC = () => {
     const [formValues, setFormValues] = useState({
@@ -25,6 +26,7 @@ const LoginPage: React.FC = () => {
         try {
             const response = axios.post("http://localhost:5000/v1/auth/login", formValues);
             console.log("User logged in successfully");
+            toast.success("User logged in successfully");
             console.log(response);
             localStorage.setItem("usertoken", JSON.stringify((await response).data.token));
             localStorage.setItem("userData", JSON.stringify((await response).data.user));

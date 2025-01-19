@@ -13,6 +13,7 @@ import { set } from "date-fns";
 import markdownToTxt from "markdown-to-txt";
 import Markdown from "react-markdown";
 import { GeminiTool } from "./gemini";
+import { toast } from 'react-hot-toast'
 
 interface Agreement {
     title: string;
@@ -220,12 +221,16 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 }
             );
             console.log("Content submitted successfully:", response.data);
+            toast.success("Agreement submitted successfully");
 
             // setAgreement({ title: "", content: "" });
             // if (editorRef.current && typeof editorRef.current.clear === "function") {
             //     editorRef.current.clear();
             // }
-            window.location.reload();
+
+            setTimeout(() => {
+                window.location.reload(); // Reload the page after 1 second
+            }, 2000);
         } catch (error) {
             console.error("Error submitting content:", error);
         }

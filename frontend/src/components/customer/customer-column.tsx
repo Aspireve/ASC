@@ -60,7 +60,7 @@ export const columns: ColumnDef<CustomerColumn>[] = [
                                         className="hover:bg-primary/5 transition-colors"
                                         onClick={handleClick}
                                     >
-                                        <ClipboardPlus className="h-4 w-4" />
+                                        <ClipboardPlus className="h-4 w-4 text-[#50bd6b]" />
                                     </Button>
                                 </SheetTrigger>
                             </TooltipTrigger>
