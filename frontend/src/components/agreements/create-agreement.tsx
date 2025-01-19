@@ -55,7 +55,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         const fetchOrganizationAndCustomerDetails = async () => {
             try {
                 const organizationResponse = await axios.get(
-                    `http://localhost:5000/v1/company/create`,
+                    `https://asc-cuhd.onrender.com/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -67,7 +67,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 setOrganization(organizationResponse.data);
                 const idToCheck = localStorage.getItem("customerIdToCheck");
                 const customerResponse = await axios.get(
-                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -210,7 +210,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             };
 
             const response = await axios.post(
-                "http://localhost:5000/v1/agree/agreement",
+                "https://asc-cuhd.onrender.com/v1/agree/agreement",
                 contentPayload,
                 {
                     headers: {
@@ -238,7 +238,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "http://localhost:5000/v1/ai/gaip",
+                "https://asc-cuhd.onrender.com/v1/ai/gaip",
                 {
                     title: agreement.title,
                     content: agreement.content,

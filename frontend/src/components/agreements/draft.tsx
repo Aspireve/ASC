@@ -114,7 +114,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const res = await axios.post(
-                    `http://localhost:5000/v1/agree/get-all-agreements`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`,
                     { status: "Draft" },
                     {
                         headers: {
@@ -156,7 +156,7 @@ This formatted version ensures better readability while maintaining the legal st
 
             try {
                 const organizationResponse = await axios.get(
-                    `http://localhost:5000/v1/company/create`,
+                    `https://asc-cuhd.onrender.com/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -169,7 +169,7 @@ This formatted version ensures better readability while maintaining the legal st
                 if (!idToCheck) return;
 
                 const customerResponse = await axios.get(
-                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -306,7 +306,7 @@ This formatted version ensures better readability while maintaining the legal st
             };
 
             await axios.post(
-                `http://localhost:5000/v1/agree/approve?_id=${agreements._id}`,
+                `https://asc-cuhd.onrender.com/v1/agree/approve?_id=${agreements._id}`,
                 contentPayload,
                 {
                     headers: {
@@ -327,7 +327,7 @@ This formatted version ensures better readability while maintaining the legal st
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "http://localhost:5000/v1/ai/gaip",
+                "https://asc-cuhd.onrender.com/v1/ai/gaip",
                 {
                     title: agreements.title,
                     content: agreement.content,

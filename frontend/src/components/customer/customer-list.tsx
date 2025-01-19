@@ -49,7 +49,7 @@ const CustomerList = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/v1/agree/customer?companyId=${user?.company[0]}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/customer?companyId=${user?.company[0]}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
