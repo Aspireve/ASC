@@ -11,4 +11,15 @@ export type PriorityColumn = {
     updatedAt: string
 };
 
-export const columns: ColumnDef<PriorityColumn>[] = []
+export const columns: ColumnDef<PriorityColumn>[] = [
+    {
+        accessorKey: 'title',
+        header: 'Title',
+        cell: ({ row }) => <div>{row.getValue("title")}</div>
+    },
+    {
+        accessorKey: 'dateToDisplay',
+        header: 'Expiry Date',
+        cell: ({ row }) => <div>{new Date(row.getValue("dateToDisplay") as string).toLocaleDateString()}</div>
+    }
+]

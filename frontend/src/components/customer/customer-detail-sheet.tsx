@@ -131,6 +131,7 @@ const CustomerDetailSheet = ({ row }: { row: Row<CustomerColumn> }) => {
         { label: 'Phone', value: row.getValue('phone') },
     ];
 
+
     const agreementDetails = [
         { label: 'Agreement Name', value: row.getValue('agreement_name') },
         { label: 'Agreement Number', value: row.getValue('agreement_number') },

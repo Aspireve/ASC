@@ -1,66 +1,166 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { ClipboardPlus, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import CustomerDetailSheet from "../customer/customer-detail-sheet";
+import CreateAgreement from "../agreements/create-agreement";
 
 interface Revision {
     _id: string;
     revisionNumber: number;
     changes: string;
     revisedBy: string;
-    revisedAt: string; // ISO date string
+    revisedAt: string;
 }
 
 export interface StatusColumn {
-    customer: string[]; // Array of customer IDs
-    _id: string; // Agreement ID
+    customer: string[];
+    _id: string;
     title: string;
     content: string;
-    createdBy: string; // ID of the creator
-    status: string; // Example: 'Accepted'
-    effectiveDate: string; // ISO date string
-    company: string; // ID of the company
-    agreementId: string; // Related agreement ID
+    createdBy: string;
+    status: string;
+    effectiveDate: string;
+    company: string;
+    agreementId: string;
     revisions: Revision[];
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
+    createdAt: string;
+    updatedAt: string;
     companyName: string;
     __v: number;
-    expiryDate: number; // Could represent a duration in days, weeks, etc.
+    expiryDate: number;
 }
-
 
 export const columns: ColumnDef<StatusColumn>[] = [
     {
         accessorKey: 'action',
         header: 'Action',
-        cell: () => (
-            <div>Action</div>
-        )
+        cell: ({ row }) => {
+            const agreementId = row.original._id;
+            if (!agreementId) return null;
+
+            return (
+                <div className="flex items-center gap-2">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-primary/5 transition-colors"
+                            >
+                                <Eye className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>View Agreement Details</p>
+                        </TooltipContent>
+                    </Tooltip>
+
+                    <Sheet>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <SheetTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="hover:bg-primary/5 transition-colors"
+                                    >
+                                        <ClipboardPlus className="h-4 w-4" />
+                                    </Button>
+                                </SheetTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Create Agreement</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <SheetContent className="sm:max-w-[50vw] overflow-y-auto">
+                            <SheetHeader>
+                                <SheetTitle className="text-xl font-semibold">New Agreement</SheetTitle>
+                                <SheetDescription>
+                                    Create an agreement for <span className="font-medium text-foreground">{row.getValue("title")}</span>
+                                </SheetDescription>
+                            </SheetHeader>
+                            <CreateAgreement customerId={agreementId} />
+                        </SheetContent>
+                    </Sheet>
+                </div>
+            );
+        }
     },
     {
-        accessorKey: 'id',
-        header: 'ID',
+        accessorKey: "id",
+        header: "ID",
         cell: ({ row }) => (
-            <div>{row.index + 1}</div>
-        )
+            <div className="font-medium text-sm text-muted-foreground w-10">
+                #{String(row.index + 1).padStart(3, '0')}
+            </div>
+        ),
     },
     {
-        accessorKey: 'title',
-        header: 'Title',
+        accessorKey: "title",
+        header: "Title",
         cell: ({ row }) => (
-            <div>{row.getValue("title")}</div>
-        )
+            <div className="flex flex-col">
+                <span className="font-medium text-sm">{row.getValue("title")}</span>
+                <span className="text-xs text-muted-foreground">
+                    ID: {row.original._id}
+                </span>
+            </div>
+        ),
     },
     {
-        accessorKey: 'expiryDate',
-        header: 'Expiry Day',
-        cell: ({ row }) => (
-            <div>{row.getValue("expiryDate")}</div>
-        )
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+            const status = (row.getValue("status") as string)?.toLowerCase() || 'pending';
+            const statusColors: Record<string, { bg: string; text: string }> = {
+                accepted: { bg: "bg-green-50", text: "text-green-700" },
+                pending: { bg: "bg-yellow-50", text: "text-yellow-700" },
+                rejected: { bg: "bg-red-50", text: "text-red-700" },
+                expired: { bg: "bg-gray-50", text: "text-gray-700" }
+            };
+
+            const { bg, text } = statusColors[status] || statusColors.pending;
+
+            return (
+                <Badge
+                    variant="secondary"
+                    className={`${bg} ${text} border-0 font-medium capitalize`}
+                >
+                    {status}
+                </Badge>
+            );
+        },
     },
     {
-        accessorKey: 'companyName',
-        header: 'Organization Name',
+        accessorKey: "expiryDate",
+        header: "Expiry Days",
         cell: ({ row }) => (
-            <div>{row.getValue("companyName")}</div>
-        )
+            <div className="text-sm">
+                {row.getValue("expiryDate")} days
+            </div>
+        ),
+    },
+    {
+        accessorKey: "companyName",
+        header: "Organization",
+        cell: ({ row }) => (
+            <div className="text-sm font-medium">
+                {row.getValue("companyName")}
+            </div>
+        ),
     }
-]
+];
