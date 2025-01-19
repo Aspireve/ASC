@@ -348,7 +348,7 @@ This formatted version ensures better readability while maintaining the legal st
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "http://localhost:5000/v1/ai/gaip",
+                "http://localhost:5000/v1/ai/gain",
                 {
                     title: agreement.title,
                     content: agreement.content,
@@ -445,7 +445,7 @@ This formatted version ensures better readability while maintaining the legal st
                                         d="M13 10V3L4 14h7v7l9-11h-7z"
                                     />
                                 </svg>
-                                Get AI Suggestions
+                                AIagreed Analysis
                             </>
                         )}
                     </button>
