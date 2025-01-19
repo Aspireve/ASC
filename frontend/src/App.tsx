@@ -7,6 +7,7 @@ import Lawyers from "./components/lawyer/lawyers";
 import CustomerList from "./components/customer/customer-list";
 import CompanyProfile from "./pages/profile";
 import FollowupTabs from "./components/follow-up/followup-tabs";
+import ProposedTabs from "./components/proposed/proposed-tab";
 
 function App() {
 
@@ -39,6 +40,10 @@ function App() {
           <Route
             path="/follow-up"
             element={<MainLayout children={<FollowupTabs />} />}
+          />
+          <Route
+            path="/proposed"
+            element={<MainLayout children={<ProposedTabs />} />}
           />
         </Routes>
       </BrowserRouter>

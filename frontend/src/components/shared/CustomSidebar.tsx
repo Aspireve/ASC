@@ -63,10 +63,12 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                 <SidebarContent>
                     <SidebarMenu>
                         <SidebarMenuItem className={`${getActiveClass('/proposed')} p-3 rounded-lg `}>
-                            <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
-                                {!isCollapsed && "Proposed"}
-                                <FileText className="h-4  ml-5" />
-                            </SidebarMenuButton>
+                            <Link to="/proposed">
+                                <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
+                                    {!isCollapsed && "Proposed"}
+                                    <FileText className="h-4  ml-5" />
+                                </SidebarMenuButton>
+                            </Link>
                         </SidebarMenuItem>
 
                         <SidebarMenuItem className={`${getActiveClass('/status')} p-3 rounded-lg `}>
@@ -92,7 +94,7 @@ const CustomSidebar: React.FC<CustomSidebarProps> = ({ user }) => {
                             <Link to="/follow-up">
                                 <SidebarMenuButton className={`${isCollapsed ? 'justify-center' : ''} flex items-center space-x-2  rounded-md`}>
                                     {!isCollapsed && "Follow Up"}
-                                    <UserRoundCheck className="h-4  ml-5" />
+                                    <Rss className="h-4  ml-5" />
                                 </SidebarMenuButton>
                             </Link>
                         </SidebarMenuItem>
