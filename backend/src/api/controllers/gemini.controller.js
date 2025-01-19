@@ -38,9 +38,7 @@ Requirements:
 
 Format each recommendation with clear headings and actionable insights. Consider both immediate and long-term impacts on the organization.
 `;
-    const response = await model.generateContent(
-      `${prompt}`
-    );
+    const response = await model.generateContent(`${prompt}`);
     return res.status(200).json({ data: await response.response.text() });
   } catch (error) {
     console.log(error);
@@ -49,13 +47,13 @@ Format each recommendation with clear headings and actionable insights. Consider
 };
 
 exports.geminiPromptsPhy = async (req, res, next) => {
-    try {
-      const genAI = new GoogleGenerativeAI(GEMMINI);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  
-      const {type, title, content} = req.body
-  
-      const prompt = `
+  try {
+    const genAI = new GoogleGenerativeAI(GEMMINI);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const { type, title, content } = req.body;
+
+    const prompt = `
    You are a senior legal counsel with extensive experience in ${type} organizations. Review the following ${title} agreement and provide 2-3 high-priority recommendations, considering:
   
   1. Legal and compliance requirements specific to ${type} sector
@@ -80,13 +78,36 @@ exports.geminiPromptsPhy = async (req, res, next) => {
   
   Format each recommendation with clear headings and actionable insights. Consider both immediate and long-term impacts on the organization.
   `;
-      const response = await model.generateContent(
-        `${prompt}`
-      );
-      return res.status(200).json({ data: await response.response.text() });
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  };
-  
+    const response = await model.generateContent(`${prompt}`);
+    return res.status(200).json({ data: await response.response.text() });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.geminiPromptsOriginal = async (req, res, next) => {
+  try {
+    const genAI = new GoogleGenerativeAI(GEMMINI);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const { type, title, prompt, orgdetails, customerDetails } = req.body;
+
+    const promptA = `${prompt} use these as context: ${
+      type && JSON.stringify(type)
+    } ${title && JSON.stringify(title)} ${
+      orgdetails && JSON.stringify(orgdetails)
+    } ${
+      customerDetails && JSON.stringify(customerDetails)
+    }, remember to be proper and nice and dont break any rules
+    
+    Provide the entire agreement with the details, use today as the date, take the address from the contactDetails.name and other data: remember not to use any other data you dont know`;
+
+    console.log(promptA);
+    const response = await model.generateContent(`${promptA}`);
+    return res.status(200).json({ data: await response.response.text() });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

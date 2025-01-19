@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.route("/gai").post(controller.geminiPrompts);
 router.route("/gaip").post(controller.geminiPromptsPhy);
+router.route("/gaio").post(controller.geminiPromptsOriginal);
 
 module.exports = router;
