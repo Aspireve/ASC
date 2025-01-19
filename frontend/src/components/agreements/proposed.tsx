@@ -350,9 +350,9 @@ This formatted version ensures better readability while maintaining the legal st
             const response = await axios.post(
                 "http://localhost:5000/v1/ai/gain",
                 {
-                    title: agreement.title,
-                    content: agreement.content,
-                    organizationType: organization.type,
+                    title: agreements.title,
+                    content: contentData,
+                    organizationType: agreements.type,
                 },
                 {
                     headers: {
@@ -418,8 +418,8 @@ This formatted version ensures better readability while maintaining the legal st
                         className={`
                             w-full flex items-center justify-center px-4 py-3 
                             border border-transparent text-sm font-medium rounded-md
-                            text-white bg-gradient-to-r from-purple-600 to-indigo-600
-                            hover:from-purple-700 hover:to-indigo-700
+                            text-white bg-gradient-to-r from-green-600 to-green-600
+                            hover:from-green-700 hover:to-green-700
                             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
                             transition-all duration-300 ease-in-out
                             ${isLoading ? "bg-opacity-75 cursor-not-allowed" : "hover:shadow-lg"}
@@ -454,7 +454,7 @@ This formatted version ensures better readability while maintaining the legal st
                             {aiResponse ? (
                                 <Markdown>{aiResponse}</Markdown>
                             ) : (
-                                "No AI suggestions available."
+                                ""
                             )}
                         </p>
                     </div>
