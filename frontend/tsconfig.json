@@ -9,7 +9,7 @@
     }
   ],
   "compilerOptions": {
-    "noEmitOnError": false, // Allows emitting even if there are errors
+    "noEmitOnError": false,
     "skipLibCheck": true, // Skips type-checking of declaration files
     "strict": false, // Disables all strict type-checking options
     "noImplicitAny": false, // Allows implicit 'any' types
