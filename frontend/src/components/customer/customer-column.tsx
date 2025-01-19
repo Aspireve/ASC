@@ -39,7 +39,7 @@ export const columns: ColumnDef<CustomerColumn>[] = [
         accessorKey: 'action',
         header: 'Action',
         cell: ({ row }) => {
-            const customerId = row.original._id; // Access the _id directly from original data
+            const customerId = row?.original?._id; // Access the _id directly from original data
             if (!customerId) return null;
             const handleClick = () => {
                 localStorage.setItem('customerIdToCheck', customerId);
