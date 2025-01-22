@@ -20,9 +20,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route
-            path="/"
+            path="/xyz"
             element={<MainLayout children={<div>Home</div>} />}
           />
           <Route
