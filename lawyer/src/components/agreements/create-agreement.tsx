@@ -140,7 +140,7 @@ const CreateAgreement: React.FC = () => {
 
             console.log("Submitting content:", contentPayload);
 
-            const response = await axios.post("http://localhost:5000/v1/agreements", contentPayload);
+            const response = await axios.post("https://asc-cuhd.onrender.com/v1/agreements", contentPayload);
             console.log("Content submitted successfully:", response.data);
 
             // Reset the form

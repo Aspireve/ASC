@@ -43,7 +43,7 @@ const SignupPage: React.FC = () => {
         formValues.picture = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
         formValues.timezone = formValues.timezone || "Asia/Kolkata"; // Default to "Asia/Kolkata" if no timezone selected
         try {
-            await axios.post("http://localhost:5000/v1/auth/register", formValues);
+            await axios.post("https://asc-cuhd.onrender.com/v1/auth/register", formValues);
             console.log("User signed up successfully");
             toast.success("User signed up successfully");
             window.location.href = "/login";

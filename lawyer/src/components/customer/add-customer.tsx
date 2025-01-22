@@ -48,7 +48,7 @@ const AddCustomer = ({ refreshTable }: { refreshTable: () => void }) => {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
         try {
-            await axios.post(`http://localhost:5000/v1/agree/customer`, values, {
+            await axios.post(`https://asc-cuhd.onrender.com/v1/agree/customer`, values, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 }

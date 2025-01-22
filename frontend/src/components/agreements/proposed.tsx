@@ -43,7 +43,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
         try {
             await axios.post(
-                `http://localhost:5000/v1/agree/add-terms?_id=${agreements._id}`,  // Fixed quote
+                `https://asc-cuhd.onrender.com/v1/agree/add-terms?_id=${agreements._id}`,  // Fixed quote
                 { changes },  // Send changes as an object
                 {
                     headers: {
@@ -75,7 +75,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             try {
                 const res = await axios.post(
-                    `http://localhost:5000/v1/agree/get-all-agreements`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get-all-agreements`,
                     { status: "Ready" },
                     {
                         headers: {
@@ -119,7 +119,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
 
             try {
                 const organizationResponse = await axios.get(
-                    `http://localhost:5000/v1/company/create`,
+                    `https://asc-cuhd.onrender.com/v1/company/create`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -132,7 +132,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
                 if (!idToCheck) return;
 
                 const customerResponse = await axios.get(
-                    `http://localhost:5000/v1/agree/get?_id=${idToCheck}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/get?_id=${idToCheck}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -268,7 +268,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
             };
 
             await axios.post(
-                `http://localhost:5000/v1/agree/complete?_id=${localStorage.getItem("customerIdToCheck")}`,
+                `https://asc-cuhd.onrender.com/v1/agree/complete?_id=${localStorage.getItem("customerIdToCheck")}`,
                 contentPayload,
                 {
                     headers: {
@@ -289,7 +289,7 @@ const CreateAgreement = ({ customerId }: { customerId: string }) => {
         setIsLoading(true);
         try {
             const response = await axios.post(
-                "http://localhost:5000/v1/ai/gain",
+                "https://asc-cuhd.onrender.com/v1/ai/gain",
                 {
                     title: agreements.title,
                     content: contentData,

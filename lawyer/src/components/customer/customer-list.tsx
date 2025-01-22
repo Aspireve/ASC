@@ -48,7 +48,7 @@ const CustomerList = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/v1/agree/customer?companyId=${user?.company[0]}`,
+                    `https://asc-cuhd.onrender.com/v1/agree/customer?companyId=${user?.company[0]}`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -101,7 +101,7 @@ const CustomerList = () => {
                 <div className="flex items-center gap-2">
                     <AddCustomer refreshTable={function (): void {
                         throw new Error("Function not implemented.");
-                    } } />
+                    }} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded-md px-4 py-2">
